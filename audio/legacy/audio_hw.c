@@ -330,23 +330,39 @@ static int setup_stereo_to_mono_input_remix(struct j6_stream_in *in)
 /*
  * Implementation of buffer_remix::remix_func that duplicates the first
  * channel into the rest of channels in the frame without doing any other
- * processing. It assumes data in 16-bits, but it's not explicitly checked
+ * processing
  */
-static void mono_remix(struct buffer_remix *data, void *buf, size_t frames)
+static void duplicate_channels_from_mono(struct buffer_remix *data, void *buf, size_t frames)
 {
-    int16_t *buffer = (int16_t*)buf;
-    size_t i;
+    int samp_size, in_frame, out_frame;
+    int N, c;
+    char *s, *d;
 
-    ALOGVV("mono_remix() remix=%p buf=%p frames=%u", data, buf, frames);
+    ALOGVV("duplicate_channels_from_mono() remix=%p buf=%p frames=%u",
+           data, buf, frames);
 
     if (frames == 0)
         return;
 
+    samp_size = data->sample_size;
+    in_frame = data->in_chans * samp_size;
+    out_frame = data->out_chans * samp_size;
+
+    if (in_frame >= out_frame) {
+        ALOGE("BUG: duplicate_channels_from_mono() can not drop channels\n");
+        return;
+    }
+
+    N = frames - 1;
+    d = (char*)buf + N * out_frame;
+    s = (char*)buf + N * in_frame;
+
     /* duplicate first channel into the rest of channels in the frame */
-    while (frames--) {
-        for (i = 1; i < data->out_chans; i++)
-            buffer[i] = buffer[0];
-        buffer += data->out_chans;
+    while (N-- >= 0) {
+        for (c = 0; c < out_frame; ++c)
+            d[c] = s[c % in_frame];
+        d -= out_frame;
+        s -= in_frame;
     }
 }
 
@@ -358,7 +374,7 @@ static int setup_mono_input_remix(struct j6_voice_stream *stream)
     if (!br)
         return -ENOMEM;
 
-    br->remix_func = mono_remix;
+    br->remix_func = duplicate_channels_from_mono;
     br->sample_size = sizeof(int16_t);
     br->in_chans = stream->in_config.channels;
     br->out_chans = stream->out_config.channels;
