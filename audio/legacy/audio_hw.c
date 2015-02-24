@@ -41,6 +41,8 @@
 
 #include <tinyalsa/asoundlib.h>
 
+#define UNUSED(x) (void)(x)
+
 /* yet another definition of ARRAY_SIZE macro) */
 #define ARRAY_SIZE(x)           (sizeof(x)/sizeof(x[0]))
 
@@ -215,7 +217,7 @@ static int find_card_index(const char *supported_cards[], int num_supported)
     char name[256] = "";
     int card = 0;
     int found = 0;
-    unsigned int i;
+    int i;
 
 #ifdef OMAP_ENHANCEMENT
     do {
@@ -437,6 +439,8 @@ static int voice_get_next_buffer(struct resampler_buffer_provider *buffer_provid
 static void voice_release_buffer(struct resampler_buffer_provider *buffer_provider,
                                  struct resampler_buffer* buffer)
 {
+    UNUSED(buffer_provider);
+    UNUSED(buffer);
 }
 
 static void *voice_thread_func(void *arg)
@@ -708,6 +712,7 @@ static uint32_t out_get_sample_rate(const struct audio_stream *stream)
 {
     uint32_t rate = PLAYBACK_SAMPLE_RATE;
 
+    UNUSED(stream);
     ALOGVV("out_get_sample_rate() stream=%p rate=%u", stream, rate);
 
     return rate;
@@ -715,6 +720,8 @@ static uint32_t out_get_sample_rate(const struct audio_stream *stream)
 
 static int out_set_sample_rate(struct audio_stream *stream, uint32_t rate)
 {
+    UNUSED(stream);
+    UNUSED(rate);
     ALOGVV("out_set_sample_rate() stream=%p rate=%u", stream, rate);
 
     return 0;
@@ -735,6 +742,7 @@ static audio_channel_mask_t out_get_channels(const struct audio_stream *stream)
 {
     audio_channel_mask_t channels = AUDIO_CHANNEL_OUT_STEREO;
 
+    UNUSED(stream);
     ALOGVV("out_get_channels() stream=%p channels=%u", stream, popcount(channels));
 
     return channels;
@@ -744,6 +752,7 @@ static audio_format_t out_get_format(const struct audio_stream *stream)
 {
     audio_format_t format = AUDIO_FORMAT_PCM_16_BIT;
 
+    UNUSED(stream);
     ALOGVV("out_set_format() stream=%p format=0x%08x (%u bits/sample)",
            stream, format, audio_bytes_per_sample(format) << 3);
 
@@ -752,6 +761,7 @@ static audio_format_t out_get_format(const struct audio_stream *stream)
 
 static int out_set_format(struct audio_stream *stream, audio_format_t format)
 {
+    UNUSED(stream);
     ALOGVV("out_set_format() stream=%p format=0x%08x (%u bits/sample)",
           stream, format, audio_bytes_per_sample(format) << 3);
 
@@ -796,6 +806,9 @@ static int out_standby(struct audio_stream *stream)
 
 static int out_dump(const struct audio_stream *stream, int fd)
 {
+    UNUSED(stream);
+    UNUSED(fd);
+
     return 0;
 }
 
@@ -834,6 +847,9 @@ static int out_set_parameters(struct audio_stream *stream, const char *kvpairs)
 
 static char* out_get_parameters(const struct audio_stream *stream, const char *keys)
 {
+    UNUSED(stream);
+    UNUSED(keys);
+
     return strdup("");
 }
 
@@ -851,6 +867,10 @@ static uint32_t out_get_latency(const struct audio_stream_out *stream)
 static int out_set_volume(struct audio_stream_out *stream, float left,
                           float right)
 {
+    UNUSED(stream);
+    UNUSED(left);
+    UNUSED(right);
+
     return -ENOSYS;
 }
 
@@ -930,22 +950,34 @@ static ssize_t out_write(struct audio_stream_out *stream, const void* buffer,
 static int out_get_render_position(const struct audio_stream_out *stream,
                                    uint32_t *dsp_frames)
 {
+    UNUSED(stream);
+    UNUSED(dsp_frames);
+
     return -EINVAL;
 }
 
 static int out_add_audio_effect(const struct audio_stream *stream, effect_handle_t effect)
 {
+    UNUSED(stream);
+    UNUSED(effect);
+
     return 0;
 }
 
 static int out_remove_audio_effect(const struct audio_stream *stream, effect_handle_t effect)
 {
+    UNUSED(stream);
+    UNUSED(effect);
+
     return 0;
 }
 
 static int out_get_next_write_timestamp(const struct audio_stream_out *stream,
                                         int64_t *timestamp)
 {
+    UNUSED(stream);
+    UNUSED(timestamp);
+
     return -EINVAL;
 }
 
@@ -1025,6 +1057,7 @@ static audio_format_t in_get_format(const struct audio_stream *stream)
 {
     audio_format_t format = AUDIO_FORMAT_PCM_16_BIT;
 
+    UNUSED(stream);
     ALOGVV("in_set_format() stream=%p format=0x%08x (%u bits/sample)",
            stream, format, audio_bytes_per_sample(format) << 3);
 
@@ -1033,6 +1066,7 @@ static audio_format_t in_get_format(const struct audio_stream *stream)
 
 static int in_set_format(struct audio_stream *stream, audio_format_t format)
 {
+    UNUSED(stream);
     ALOGV("in_set_format() stream=%p format=0x%08x (%u bits/sample)",
           stream, format, audio_bytes_per_sample(format) << 3);
 
@@ -1073,6 +1107,9 @@ static int in_standby(struct audio_stream *stream)
 
 static int in_dump(const struct audio_stream *stream, int fd)
 {
+    UNUSED(stream);
+    UNUSED(fd);
+
     return 0;
 }
 
@@ -1114,11 +1151,17 @@ static int in_set_parameters(struct audio_stream *stream, const char *kvpairs)
 static char * in_get_parameters(const struct audio_stream *stream,
                                 const char *keys)
 {
+    UNUSED(stream);
+    UNUSED(keys);
+
     return strdup("");
 }
 
 static int in_set_gain(struct audio_stream_in *stream, float gain)
 {
+    UNUSED(stream);
+    UNUSED(gain);
+
     return 0;
 }
 
@@ -1279,17 +1322,25 @@ static ssize_t in_read(struct audio_stream_in *stream, void* buffer,
 
 static uint32_t in_get_input_frames_lost(struct audio_stream_in *stream)
 {
+    UNUSED(stream);
     ALOGVV("in_get_input_frames_lost() stream=%p frames=%u", stream, 0);
+
     return 0;
 }
 
 static int in_add_audio_effect(const struct audio_stream *stream, effect_handle_t effect)
 {
+    UNUSED(stream);
+    UNUSED(effect);
+
     return 0;
 }
 
 static int in_remove_audio_effect(const struct audio_stream *stream, effect_handle_t effect)
 {
+    UNUSED(stream);
+    UNUSED(effect);
+
     return 0;
 }
 
@@ -1299,10 +1350,14 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
                                    audio_output_flags_t flags,
                                    struct audio_config *config,
                                    struct audio_stream_out **stream_out,
-                                   const char *address __unused)
+                                   const char *address)
 {
     struct j6_audio_device *adev = (struct j6_audio_device *)dev;
     struct j6_stream_out *out;
+
+    UNUSED(handle);
+    UNUSED(devices);
+    UNUSED(address);
 
     out = (struct j6_stream_out *)calloc(1, sizeof(struct j6_stream_out));
     if (!out)
@@ -1366,42 +1421,65 @@ static void adev_close_output_stream(struct audio_hw_device *dev,
 
 static int adev_set_parameters(struct audio_hw_device *dev, const char *kvpairs)
 {
+    UNUSED(dev);
+    UNUSED(kvpairs);
+
     return -ENOSYS;
 }
 
 static char * adev_get_parameters(const struct audio_hw_device *dev,
                                   const char *keys)
 {
+    UNUSED(dev);
+    UNUSED(keys);
+
     return strdup("");;
 }
 
 static int adev_init_check(const struct audio_hw_device *dev)
 {
+    UNUSED(dev);
+
     return 0;
 }
 
 static int adev_set_voice_volume(struct audio_hw_device *dev, float volume)
 {
+    UNUSED(dev);
+    UNUSED(volume);
+
     return -ENOSYS;
 }
 
 static int adev_set_master_volume(struct audio_hw_device *dev, float volume)
 {
+    UNUSED(dev);
+    UNUSED(volume);
+
     return -ENOSYS;
 }
 
 static int adev_get_master_volume(struct audio_hw_device *dev, float *volume)
 {
+    UNUSED(dev);
+    UNUSED(volume);
+
     return -ENOSYS;
 }
 
 static int adev_set_master_mute(struct audio_hw_device *dev, bool muted)
 {
+    UNUSED(dev);
+    UNUSED(muted);
+
     return -ENOSYS;
 }
 
 static int adev_get_master_mute(struct audio_hw_device *dev, bool *muted)
 {
+    UNUSED(dev);
+    UNUSED(muted);
+
     return -ENOSYS;
 }
 
@@ -1463,6 +1541,8 @@ static int adev_get_mic_mute(const struct audio_hw_device *dev, bool *state)
 static size_t adev_get_input_buffer_size(const struct audio_hw_device *dev,
                                          const struct audio_config *config)
 {
+    UNUSED(dev);
+
     size_t bytes = get_input_buffer_size(config->sample_rate,
                                         config->format,
                                         popcount(config->channel_mask));
@@ -1477,13 +1557,19 @@ static int adev_open_input_stream(struct audio_hw_device *dev,
                                   audio_devices_t devices,
                                   struct audio_config *config,
                                   struct audio_stream_in **stream_in,
-                                  audio_input_flags_t flags __unused,
-                                  const char *address __unused,
-                                  audio_source_t source __unused)
+                                  audio_input_flags_t flags,
+                                  const char *address,
+                                  audio_source_t source)
 {
     struct j6_audio_device *adev = (struct j6_audio_device *)dev;
     struct j6_stream_in *in;
     int ret;
+
+    UNUSED(handle);
+    UNUSED(devices);
+    UNUSED(flags);
+    UNUSED(address);
+    UNUSED(source);
 
     in = (struct j6_stream_in *)calloc(1, sizeof(struct j6_stream_in));
     if (!in)
@@ -1600,6 +1686,9 @@ static void adev_close_input_stream(struct audio_hw_device *dev,
 
 static int adev_dump(const audio_hw_device_t *device, int fd)
 {
+    UNUSED(device);
+    UNUSED(fd);
+
     return 0;
 }
 
