@@ -76,7 +76,8 @@ struct j6_voice_stream {
     int16_t *out_buffer;
     size_t in_frames;
     size_t out_frames;
-    size_t frame_size;
+    size_t in_frame_size;
+    size_t out_frame_size;
     char *name;
 };
 
@@ -189,7 +190,7 @@ struct pcm_config pcm_config_playback = {
 };
 
 struct pcm_config pcm_config_bt_in = {
-    .channels        = 2,
+    .channels        = 1,
     .rate            = BT_SAMPLE_RATE,
     .format          = PCM_FORMAT_S16_LE,
     .period_size     = BT_PERIOD_SIZE,
@@ -199,7 +200,7 @@ struct pcm_config pcm_config_bt_in = {
 };
 
 struct pcm_config pcm_config_bt_out = {
-    .channels        = 2,
+    .channels        = 1,
     .rate            = BT_SAMPLE_RATE,
     .format          = PCM_FORMAT_S16_LE,
     .period_size     = BT_PERIOD_SIZE,
@@ -366,9 +367,9 @@ static void duplicate_channels_from_mono(struct buffer_remix *data, void *buf, s
     }
 }
 
-static int setup_mono_input_remix(struct j6_voice_stream *stream)
+static int setup_voice_remix(struct j6_voice_stream *stream)
 {
-    ALOGV("setup_mono_input_remix() %s stream", stream->name);
+    ALOGVV("setup_voice_mono_to_stereo_input_remix() %s stream", stream->name);
 
     struct buffer_remix *br = (struct buffer_remix *)calloc(1, sizeof(struct buffer_remix));
     if (!br)
@@ -378,6 +379,14 @@ static int setup_mono_input_remix(struct j6_voice_stream *stream)
     br->sample_size = sizeof(int16_t);
     br->in_chans = stream->in_config.channels;
     br->out_chans = stream->out_config.channels;
+
+    if (br->in_chans == 1)
+        br->remix_func = duplicate_channels_from_mono;
+    else if (br->out_chans == 1)
+        br->remix_func = remove_channels_from_buf;
+    else
+        return -ENOTSUP;
+
     stream->remix = br;
 
     return 0;
@@ -411,7 +420,7 @@ static int voice_get_next_buffer(struct resampler_buffer_provider *buffer_provid
     }
 
     ret = pcm_read(stream->pcm_in, stream->in_buffer,
-                   buffer->frame_count * stream->frame_size);
+                   buffer->frame_count * stream->in_frame_size);
     if (ret) {
         ALOGE("voice_get_next_buffer() failed to read %s: %s",
               stream->name, pcm_get_error(stream->pcm_in));
@@ -443,7 +452,7 @@ static void *voice_thread_func(void *arg)
 
     pcm_start(stream->pcm_in);
 
-    memset(stream->out_buffer, 0, stream->out_frames * stream->frame_size);
+    memset(stream->out_buffer, 0, stream->out_frames * stream->out_frame_size);
 
     while (adev->in_call) {
         if (out_steady) {
@@ -466,7 +475,7 @@ static void *voice_thread_func(void *arg)
             stream->remix->remix_func(stream->remix, stream->out_buffer, frames);
 
         ret = pcm_write(stream->pcm_out, stream->out_buffer,
-                        frames * stream->frame_size);
+                        frames * stream->out_frame_size);
         if (ret) {
             ALOGE("voice_thread_func() failed to write %s: %s",
                   stream->name, pcm_get_error(stream->pcm_out));
@@ -521,17 +530,17 @@ static int voice_stream_init(struct j6_voice_stream *stream,
                              unsigned int in_card,
                              unsigned int in_port,
                              unsigned int out_card,
-                             unsigned int out_port,
-                             bool needs_mono_remix)
+                             unsigned int out_port)
 {
     struct j6_audio_device *adev = stream->dev;
+    int frames;
     int ret;
 
     stream->buf_provider.get_next_buffer = voice_get_next_buffer;
     stream->buf_provider.release_buffer = voice_release_buffer;
     ret = create_resampler(stream->in_config.rate,
                            stream->out_config.rate,
-                           2,
+                           stream->in_config.channels,
                            RESAMPLER_QUALITY_DEFAULT,
                            &stream->buf_provider,
                            &stream->resampler);
@@ -553,16 +562,23 @@ static int voice_stream_init(struct j6_voice_stream *stream,
         return -ENODEV;
     }
 
-    stream->frame_size = pcm_frames_to_bytes(stream->pcm_in, 1);
+    /*
+     * Choose the largest frame size since mono-to-stereo and
+     * stereo-to-mono conversion happens in place
+     */
+    stream->in_frame_size = pcm_frames_to_bytes(stream->pcm_in, 1);
+    stream->out_frame_size = pcm_frames_to_bytes(stream->pcm_out, 1);
+    frames = (stream->in_frame_size > stream->out_frame_size) ?
+                stream->in_frame_size : stream->out_frame_size;
 
     /* out_buffer will store the resampled data */
     stream->out_frames = stream->out_config.period_size;
-    stream->out_buffer = malloc(stream->out_frames * stream->frame_size);
+    stream->out_buffer = malloc(stream->out_frames * frames);
 
     /* in_buffer will store the frames recorded from the PCM device */
     stream->in_frames = (stream->out_frames * stream->in_config.rate) / stream->out_config.rate +
                         RESAMPLER_HEADROOM_FRAMES;
-    stream->in_buffer = malloc(stream->in_frames * stream->frame_size);
+    stream->in_buffer = malloc(stream->in_frames * frames);
 
     if (!stream->in_buffer || !stream->out_buffer) {
         ALOGE("voice_stream_init() failed to allocate %s buffers", stream->name);
@@ -570,18 +586,13 @@ static int voice_stream_init(struct j6_voice_stream *stream,
         return -ENOMEM;
     }
 
-    if (needs_mono_remix) {
-        ret = setup_mono_input_remix(stream);
-        if (ret) {
-            ALOGE("voice_stream_init() failed to setup mono remix %d", ret);
-            voice_stream_exit(stream);
-            return ret;
-        }
-    } else {
-        stream->remix = NULL;
+    ret = setup_voice_remix(stream);
+    if (ret) {
+        ALOGE("voice_stream_init() failed to setup remix %d", ret);
+        voice_stream_exit(stream);
     }
 
-    return 0;
+    return ret;
 }
 
 static int enter_voice_call(struct j6_audio_device *adev)
@@ -601,7 +612,7 @@ static int enter_voice_call(struct j6_audio_device *adev)
     voice->ul.out_config = pcm_config_bt_out;
     voice->ul.dev = adev;
     ret = voice_stream_init(&voice->ul, adev->card, adev->in_port,
-                            adev->bt_card, adev->bt_port, false);
+                            adev->bt_card, adev->bt_port);
     if (ret) {
         ALOGE("enter_voice_call() failed to init uplink %d", ret);
         return ret;
@@ -613,7 +624,7 @@ static int enter_voice_call(struct j6_audio_device *adev)
     voice->dl.out_config = pcm_config_playback;
     voice->dl.dev = adev;
     ret = voice_stream_init(&voice->dl, adev->bt_card, adev->bt_port,
-                            adev->card, adev->out_port, true);
+                            adev->card, adev->out_port);
     if (ret) {
         ALOGE("enter_voice_call() failed to init downlink %d", ret);
         goto err_dl_init;
