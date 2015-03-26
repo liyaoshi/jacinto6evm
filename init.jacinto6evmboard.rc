@@ -40,9 +40,6 @@ on post-fs-data
 # enabling thermal zone for mpu
     write /sys/class/thermal/thermal_zone0/mode enabled
 
-#for Bluetooth HID
-    chmod 0666 /dev/uhid
-
 # Create GPS folders and set its permissions
     mkdir /data/gnss
     chown system system /data/gnss
@@ -55,7 +52,6 @@ on post-fs-data
     insmod /system/lib/modules/gps_drv.ko
 
 on boot
-    chmod 0666 /dev/pvrsrvkm
 
     # wi-fi
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
@@ -75,24 +71,8 @@ on fs
     mkdir /factory 0775 radio radio
     mount_all /fstab.jacinto6evmboard
 
-# Make UART wake up capable
-    write /sys/devices/ocp.2/4806a000.serial/tty/ttyO0/power/wakeup enabled
-
-# change permissions for Bluetooth/FM/GPS
-    chmod 0660 /dev/ttyO4
-    chown bluetooth bluetooth /dev/ttyO4
-
 # take a wakelock on boot until PM is working
     write /sys/power/wake_lock hack
-
-# change permissions for ION driver
-    chmod 0777 /dev/ion
-
-# Change permissions on the governor (this is for debug only)
-    chmod 444 /proc/cmdline
-
-# add symlink for HDCP key
-    symlink /factory/hdcp.keys /system/vendor/firmware/hdcp.keys
 
 service pvrsrvinit /vendor/bin/pvrsrvinit
     class core
