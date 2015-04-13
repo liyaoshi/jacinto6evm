@@ -68,19 +68,22 @@ cputype=`${FASTBOOT} getvar secure 2>&1  | grep secure  | awk '{print$2}'`
 if [ ${cputype} = "EMU" ] || [ ${cputype} = "HS" ]; then
         cputype="HS"
 	xloader="${PRODUCT_OUT}${cputype}_QSPI_MLO"
+	if [ ${cpu} = "J6ECO" ]; then
+		environment="${PRODUCT_OUT}dra72-hs-evm-lcd10.dtb"
+	else
+		environment="${PRODUCT_OUT}dra7-hs-evm-lcd10.dtb"
+	fi
 fi
 
 # If fastboot does not support getvar default to GP
 if [ ${cputype} = "" ] || [ ${cputype} = "GP" ]; then
 	cputype="GP"
 	xloader="${PRODUCT_OUT}${cputype}_MLO"
-fi
-
-# Based on cpu, decide the dtb to flash, default fall back to J6
-if [ ${cpu} = "J6ECO" ]; then
-        environment="${PRODUCT_OUT}dra72-evm-lcd10.dtb"
-else
-        environment="${PRODUCT_OUT}dra7-evm-lcd10.dtb"
+	if [ ${cpu} = "J6ECO" ]; then
+		environment="${PRODUCT_OUT}dra72-evm-lcd10.dtb"
+	else
+		environment="${PRODUCT_OUT}dra7-evm-lcd10.dtb"
+	fi
 fi
 
 # Create the filename
@@ -111,6 +114,8 @@ fi
 if [ ! -e "${environment}" ] ; then
   echo "Missing ${environment}"
   exit -1;
+else
+  echo "DTB = ${environment}"
 fi
 if [ ! -e "${systemimg}" ] ; then
   echo "Missing ${systemimg}"
@@ -155,7 +160,6 @@ ${FASTBOOT} oem format
 
 echo "Flash android partitions"
 ${FASTBOOT} flash boot		${bootimg}
-echo "Flashing device tree ${environment}"
 ${FASTBOOT} flash environment	${environment}
 ${FASTBOOT} flash recovery	${recoveryimg}
 ${FASTBOOT} flash system	${systemimg}
