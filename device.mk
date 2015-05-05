@@ -47,6 +47,7 @@ PRODUCT_COPY_FILES += \
 # Audio
 PRODUCT_COPY_FILES += \
 	device/ti/jacinto6evm/audio/primary/mixer_paths.xml:system/etc/mixer_paths.xml \
+	device/ti/jacinto6evm/audio/jamr3/jamr3_mixer_paths.xml:system/etc/jamr3_mixer_paths.xml \
 	device/ti/jacinto6evm/audio/audio_policy.conf:system/etc/audio_policy.conf
 
 PRODUCT_PACKAGES := \
@@ -100,6 +101,7 @@ PRODUCT_PACKAGES += \
 
 # Audio HAL modules
 PRODUCT_PACKAGES += audio.primary.jacinto6
+PRODUCT_PACKAGES += audio.jamr3.jacinto6
 PRODUCT_PACKAGES += audio.hdmi.jacinto6
 # BlueDroid a2dp Audio HAL module
 PRODUCT_PACKAGES += audio.a2dp.default
