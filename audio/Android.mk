@@ -1,4 +1,4 @@
-# Copyright (C) 2013 Texas Instruments
+# Copyright (C) 2015 Texas Instruments
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,25 +13,4 @@
 # limitations under the License.
 
 LOCAL_PATH := $(call my-dir)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := mixer_paths.xml
-LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_CLASS := ETC
-LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
-LOCAL_SRC_FILES := $(LOCAL_MODULE)
-include $(BUILD_PREBUILT)
-
-# build multizone audio if the OMAP_MULTIZONE_AUDIO flag is set to true
-ifeq ($(OMAP_MULTIZONE_AUDIO),true)
-include $(CLEAR_VARS)
-
-include $(LOCAL_PATH)/multizone/Android.mk
-
-else # build the legacy audio if the OMAP_MULTIZONE_AUDIO flag is set to false
-
-include $(CLEAR_VARS)
-
-include $(LOCAL_PATH)/legacy/Android.mk
-
-endif
+include $(call all-makefiles-under,$(LOCAL_PATH))

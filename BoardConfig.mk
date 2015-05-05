@@ -22,8 +22,6 @@ OMAP_ENHANCEMENT := true
 
 ifeq ($(OMAP_ENHANCEMENT),true)
 COMMON_GLOBAL_CFLAGS += -DOMAP_ENHANCEMENT
-# Multi-zone audio (requires ro.com.ti.omap_multizone_audio, see device.mk)
-#OMAP_MULTIZONE_AUDIO := true
 endif
 
 TARGET_CPU_ABI := armeabi-v7a
@@ -68,10 +66,6 @@ BOARD_HOSTAPD_DRIVER        := NL80211
 BOARD_WLAN_DEVICE           := wl12xx_mac80211
 BOARD_SOFTAP_DEVICE         := wl12xx_mac80211
 COMMON_GLOBAL_CFLAGS += -DUSES_TI_MAC80211
-endif
-
-ifeq ($(OMAP_MULTIZONE_AUDIO),true)
-COMMON_GLOBAL_CFLAGS += -DOMAP_MULTIZONE_AUDIO
 endif
 
 #BOARD_SEPOLICY_DIRS := device/ti/jacinto6evm/sepolicy

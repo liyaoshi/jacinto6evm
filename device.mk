@@ -44,6 +44,11 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.camera.xml:system/etc/permissions/android.hardware.camera.xml \
 	frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
 
+# Audio
+PRODUCT_COPY_FILES += \
+	device/ti/jacinto6evm/audio/primary/mixer_paths.xml:system/etc/mixer_paths.xml \
+	device/ti/jacinto6evm/audio/audio_policy.conf:system/etc/audio_policy.conf
+
 PRODUCT_PACKAGES := \
 	e2fsck
 
@@ -101,13 +106,6 @@ PRODUCT_PACKAGES += audio.a2dp.default
 # Remote submix
 PRODUCT_PACKAGES += audio.r_submix.default
 
-# Audio policy
-PRODUCT_PACKAGES += audio_policy.jacinto6
-
-PRODUCT_PACKAGES += \
-	audio_policy.conf \
-	mixer_paths.xml
-
 PRODUCT_PACKAGES += \
 	tinymix \
 	tinyplay \
@@ -149,10 +147,6 @@ PRODUCT_PACKAGES += \
 # Enable AAC 5.1 decode (decoder)
 PRODUCT_PROPERTY_OVERRIDES += \
 	media.aac_51_output_enabled=true
-
-# Multi-zone audio (requires OMAP_MULTIZONE_AUDIO, see BoardConfig.mk)
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.com.ti.omap_multizone_audio=true
 
 $(call inherit-product, frameworks/native/build/tablet-7in-hdpi-1024-dalvik-heap.mk)
 $(call inherit-product-if-exists, hardware/ti/dra7xx/jacinto6.mk)
