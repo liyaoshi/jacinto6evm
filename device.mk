@@ -118,7 +118,8 @@ PRODUCT_PACKAGES += \
 	HelloRadio \
 	lad_dra7xx \
 	libtiipc \
-	libtiipcutils
+	libtiipcutils \
+	libtitransportrpmsg
 
 # Can utilities
 PRODUCT_PACKAGES += \
