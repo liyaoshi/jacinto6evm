@@ -66,19 +66,19 @@ cputype=`${FASTBOOT} getvar secure 2>&1  | grep secure  | awk '{print$2}'`
 
 # Make EMU = HS
 if [ ${cputype} = "EMU" ] || [ ${cputype} = "HS" ]; then
-        cputype="HS"
+	cputype="HS"
 	xloader="${PRODUCT_OUT}${cputype}_QSPI_MLO"
+	uboot="${PRODUCT_OUT}${cputype}_u-boot.img"
 	if [ ${cpu} = "J6ECO" ]; then
 		environment="${PRODUCT_OUT}dra72-hs-evm-lcd10.dtb"
 	else
 		environment="${PRODUCT_OUT}dra7-hs-evm-lcd10.dtb"
 	fi
-fi
-
 # If fastboot does not support getvar default to GP
-if [ ${cputype} = "" ] || [ ${cputype} = "GP" ]; then
+elif [ ${cputype} = "" ] || [ ${cputype} = "GP" ]; then
 	cputype="GP"
 	xloader="${PRODUCT_OUT}${cputype}_MLO"
+	uboot="${PRODUCT_OUT}u-boot.img"
 	if [ ${cpu} = "J6ECO" ]; then
 		environment="${PRODUCT_OUT}dra72-evm-lcd10.dtb"
 	else
@@ -88,7 +88,6 @@ fi
 
 # Create the filename
 bootimg="${PRODUCT_OUT}boot.img"
-uboot="${PRODUCT_OUT}u-boot.img"
 systemimg="${PRODUCT_OUT}system.img"
 userdataimg="${PRODUCT_OUT}userdata.img"
 cacheimg="${PRODUCT_OUT}cache.img"
@@ -143,11 +142,11 @@ ${FASTBOOT} oem spi
 sleep 3
 
 echo "Flashing bootloader....."
-echo "   xloader: ${xloader}"
+echo "   xloader:     ${xloader}"
 ${FASTBOOT} flash xloader	${xloader}
 
 sleep 3
-
+echo "   bootloader:  ${uboot}"
 ${FASTBOOT} flash bootloader	${uboot}
 
 #echo "Reboot: make sure new bootloader runs..."
@@ -160,6 +159,8 @@ ${FASTBOOT} oem format
 
 echo "Flash android partitions"
 ${FASTBOOT} flash boot		${bootimg}
+echo "Flashing environemnt....."
+echo "   environment: ${environment}"
 ${FASTBOOT} flash environment	${environment}
 ${FASTBOOT} flash recovery	${recoveryimg}
 ${FASTBOOT} flash system	${systemimg}
