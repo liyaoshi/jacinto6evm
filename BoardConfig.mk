@@ -72,5 +72,6 @@ BOARD_SEPOLICY_DIRS := device/ti/jacinto6evm/sepolicy
 BOARD_SEPOLICY_UNION := \
 		bluetooth.te \
 		device.te \
+		pvr.te \
 		file_contexts
 
