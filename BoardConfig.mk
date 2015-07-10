@@ -68,7 +68,9 @@ BOARD_SOFTAP_DEVICE         := wl12xx_mac80211
 COMMON_GLOBAL_CFLAGS += -DUSES_TI_MAC80211
 endif
 
-#BOARD_SEPOLICY_DIRS := device/ti/jacinto6evm/sepolicy
-#BOARD_SEPOLICY_UNION := \
-#        healthd.te
+BOARD_SEPOLICY_DIRS := device/ti/jacinto6evm/sepolicy
+BOARD_SEPOLICY_UNION := \
+		bluetooth.te \
+		device.te \
+		file_contexts
 
