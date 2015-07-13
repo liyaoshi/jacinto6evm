@@ -1,0 +1,2 @@
+#For loading modules via init.rc (wifi,cmem)
+allow init self:capability sys_module;
