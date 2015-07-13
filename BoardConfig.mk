@@ -73,6 +73,7 @@ BOARD_SEPOLICY_UNION := \
 		bluetooth.te \
 		device.te \
 		init.te \
+		ueventd.te \
 		pvr.te \
 		file_contexts
 

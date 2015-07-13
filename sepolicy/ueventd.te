@@ -1,0 +1,3 @@
+#Rules for crda operations
+allow ueventd self:netlink_socket { create_socket_perms };
+allow ueventd system_file:file { execute_no_trans };
