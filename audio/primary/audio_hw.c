@@ -1242,9 +1242,25 @@ static ssize_t read_frames(struct j6_stream_in *in, void *buffer, ssize_t frames
     while (frames_wr < frames) {
         size_t frames_rd = frames - frames_wr;
 
-        in->resampler->resample_from_provider(in->resampler,
+        if  (in->resampler) {
+            in->resampler->resample_from_provider(in->resampler,
                     (int16_t *)((char *)buffer + frames_wr * frame_size),
                     &frames_rd);
+        } else {
+            struct resampler_buffer buf = {
+                    { raw : NULL, },
+                    frame_count : frames_rd,
+            };
+            get_next_buffer(&in->buf_provider, &buf);
+            if (buf.raw) {
+                memcpy((char *)buffer + frames_wr * frame_size,
+                       buf.raw,
+                       buf.frame_count * frame_size);
+                frames_rd = buf.frame_count;
+            }
+            release_buffer(&in->buf_provider, &buf);
+        }
+
         /* in->read_status is updated by getNextBuffer() also called by
          * in->resampler->resample_from_provider() */
         if (in->read_status != 0)
