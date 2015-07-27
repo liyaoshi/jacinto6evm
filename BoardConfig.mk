@@ -76,5 +76,6 @@ BOARD_SEPOLICY_UNION := \
 		ueventd.te \
 		pvr.te \
 		mediaserver.te \
+		system_server.te \
 		file_contexts
 

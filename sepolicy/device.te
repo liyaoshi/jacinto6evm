@@ -1,1 +1,2 @@
 type bluetooth_control, dev_type;
+type rtc, dev_type;

@@ -16,3 +16,6 @@
 
 #rpmsg
 /dev/rpmsg-dce			u:object_r:rpmsg_device:s0
+
+#Real Time Clock
+/dev/rtc0			u:object_r:rtc:s0
