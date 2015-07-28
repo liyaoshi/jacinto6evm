@@ -80,6 +80,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PACKAGES += \
 	wpa_supplicant \
 	wpa_supplicant.conf \
+	wpa_supplicant_overlay.conf \
 	libwpa_client \
 	hostapd \
 	hostapd.conf \
