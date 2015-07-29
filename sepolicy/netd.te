@@ -1,0 +1,4 @@
+# These denials are seen with WLAN, but are not harmful.
+# Ignore them
+dontaudit netd self:capability sys_module;
+dontaudit netd kernel:system module_request;
