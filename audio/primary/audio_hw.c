@@ -197,8 +197,6 @@ struct pcm_config pcm_config_bt_in = {
     .format          = PCM_FORMAT_S16_LE,
     .period_size     = BT_PERIOD_SIZE,
     .period_count    = BT_PERIOD_COUNT,
-    .start_threshold = 1,
-    .stop_threshold  = BT_BUFFER_SIZE,
 };
 
 struct pcm_config pcm_config_bt_out = {
@@ -207,9 +205,6 @@ struct pcm_config pcm_config_bt_out = {
     .format          = PCM_FORMAT_S16_LE,
     .period_size     = BT_PERIOD_SIZE,
     .period_count    = BT_PERIOD_COUNT,
-    .start_threshold = BT_BUFFER_SIZE / 2,
-    .stop_threshold  = BT_BUFFER_SIZE,
-    .avail_min       = BT_PERIOD_SIZE,
 };
 
 static int find_card_index(const char *supported_cards[], int num_supported)
