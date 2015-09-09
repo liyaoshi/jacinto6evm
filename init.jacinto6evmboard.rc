@@ -67,6 +67,9 @@ on boot
     # CMEM for Radio
     insmod /system/lib/modules/cmemk.ko phys_start=0x95400000 phys_end=0x95800000 pools=20x65536,40x4096 allowOverlap=1
 
+    # 2d blitter
+    insmod /system/lib/modules/galcore.ko physSize=0xc0000000
+
 on fs
     mkdir /factory 0775 radio radio
     mount_all /fstab.jacinto6evmboard
