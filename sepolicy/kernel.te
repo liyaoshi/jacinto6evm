@@ -1,0 +1,5 @@
+# This is for suppressing logs generated due to kdevtmpfs being
+# enabled in kernel for non Android reasons. For Android these
+# denials do not matter as it does not rely on kdevtmpfs.
+# So putting it in dontaudit list
+dontaudit kernel self:capability mknod;

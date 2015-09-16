@@ -81,5 +81,6 @@ BOARD_SEPOLICY_UNION := \
 		mediaserver.te \
 		system_server.te \
 		netd.te \
+		kernel.te \
 		file_contexts
 
