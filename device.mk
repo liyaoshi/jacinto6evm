@@ -123,6 +123,9 @@ PRODUCT_PACKAGES += \
 	libtiipcutils \
 	libtitransportrpmsg
 
+# Launcher3
+PRODUCT_PACKAGES += Launcher3
+
 # Can utilities
 PRODUCT_PACKAGES += \
 	libcan \
