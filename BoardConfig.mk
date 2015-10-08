@@ -72,15 +72,3 @@ COMMON_GLOBAL_CFLAGS += -DANDROID_P2P_STUB
 endif
 
 BOARD_SEPOLICY_DIRS := device/ti/jacinto6evm/sepolicy
-BOARD_SEPOLICY_UNION := \
-		bluetooth.te \
-		device.te \
-		init.te \
-		ueventd.te \
-		pvr.te \
-		mediaserver.te \
-		system_server.te \
-		netd.te \
-		kernel.te \
-		file_contexts
-
