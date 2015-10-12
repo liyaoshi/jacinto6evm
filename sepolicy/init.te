@@ -1,2 +1,4 @@
 #For loading modules via init.rc (wifi,cmem)
 allow init self:capability sys_module;
+#Create symlinks for storage
+allow init tmpfs:lnk_file create_file_perms;
