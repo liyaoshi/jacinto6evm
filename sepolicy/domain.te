@@ -1,0 +1,2 @@
+#TEMP
+dontaudit domain kernel:system module_request;
