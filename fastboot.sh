@@ -16,6 +16,7 @@ fi
 # Pre-packaged DB
 export FASTBOOT=${FASTBOOT-"./fastboot"}
 export PRODUCT_OUT=${PRODUCT_OUT-"./"}
+export LD_LIBRARY_PATH=./
 
 echo "Fastboot: $FASTBOOT"
 echo "Image location: $PRODUCT_OUT"
