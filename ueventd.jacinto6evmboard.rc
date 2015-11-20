@@ -24,7 +24,11 @@
 /dev/i2c-4                0660   media system
 
 # cmem
-/dev/cmem                 0660   system system
+/dev/cmem                 0660   media system
+
+# ipc
+/dev/uio0                 0660   media system
+/dev/hwspinlock           0660   media system
 
 # for GNSS
 /dev/tigps                0666   root	    root
