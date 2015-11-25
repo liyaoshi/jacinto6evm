@@ -117,7 +117,7 @@ PRODUCT_PACKAGES += \
 	tinycap
 
 # Radio
-#PRODUCT_PACKAGES += \
+PRODUCT_PACKAGES += \
 	HelloRadio \
 	lad_dra7xx \
 	libtiipc \
