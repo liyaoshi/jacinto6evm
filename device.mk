@@ -118,7 +118,7 @@ PRODUCT_PACKAGES += \
 
 # Radio
 PRODUCT_PACKAGES += \
-	HelloRadio \
+	RadioApp \
 	lad_dra7xx \
 	libtiipc \
 	libtiipcutils \
