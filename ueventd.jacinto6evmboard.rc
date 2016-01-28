@@ -1,6 +1,9 @@
 #for PVR
 /dev/pvrsrvkm             0666   system     system
+
+# for android sync framework
 /dev/pvr_sync             0666   system     system
+/dev/sw_sync              0666   system     system
 
 # for IPC3.x
 /dev/rpmsg-dce            0666   media      media
