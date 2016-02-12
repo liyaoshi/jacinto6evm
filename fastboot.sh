@@ -127,7 +127,7 @@ if [ ! -e "${userdataimg}" ] ; then
 fi
 if [ ! -e "${cacheimg}" ] ; then
   echo "Missing ${cacheimg}"
-#  exit -1;
+  exit -1;
 fi
 if [ ! -e "${recoveryimg}" ] ; then
   echo "Missing ${recoveryimg}"
@@ -224,16 +224,6 @@ if [ "$1" != "--noefs" ] ; then
 	${FASTBOOT} flash efs ${efsimg}
 else
   echo "efs partition is untouched"
-fi
-
-#Create cache.img
-if [ ! -f ${cacheimg} ]
-then
-	echo "Creating cache.img as empty ext4 img...."
-	rm -rf /tmp/fastboot-cache
-	mkdir /tmp/fastboot-cache
-	./make_ext4fs -s -l 256M -a cache ${cacheimg} /tmp/fastboot-cache/
-	rm -rf /tmp/fastboot-cache
 fi
 
 #flash cache.img
