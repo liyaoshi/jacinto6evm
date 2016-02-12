@@ -15,4 +15,5 @@
 #
 
 add_lunch_combo full_jacinto6evm-eng
+add_lunch_combo full_jacinto6evm-user
 add_lunch_combo full_jacinto6evm-userdebug
