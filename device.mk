@@ -68,8 +68,6 @@ PRODUCT_CHARACTERISTICS := tablet,nosdcard
 DEVICE_PACKAGE_OVERLAYS := \
 	device/ti/jacinto6evm/overlay
 
-PRODUCT_TAGS += dalvik.gc.type-precise
-
 PRODUCT_PACKAGES += \
 	com.android.future.usb.accessory
 
