@@ -70,21 +70,18 @@ if [ ${cputype} = "EMU" ] || [ ${cputype} = "HS" ]; then
 	cputype="HS"
 	xloader="${PRODUCT_OUT}${cputype}_QSPI_MLO"
 	uboot="${PRODUCT_OUT}${cputype}_u-boot.img"
-	if [ ${cpu} = "J6ECO" ]; then
-		environment="${PRODUCT_OUT}dra72-hs-evm-lcd10.dtb"
-	else
-		environment="${PRODUCT_OUT}dra7-hs-evm-lcd10.dtb"
-	fi
 # If fastboot does not support getvar default to GP
 elif [ ${cputype} = "" ] || [ ${cputype} = "GP" ]; then
 	cputype="GP"
 	xloader="${PRODUCT_OUT}${cputype}_MLO"
 	uboot="${PRODUCT_OUT}u-boot.img"
-	if [ ${cpu} = "J6ECO" ]; then
-		environment="${PRODUCT_OUT}dra72-evm-lcd10.dtb"
-	else
-		environment="${PRODUCT_OUT}dra7-evm-lcd10.dtb"
-	fi
+fi
+
+# Based on cpu, decide the dtb to flash, default fall back to J6
+if [ ${cpu} = "J6ECO" ]; then
+	environment="${PRODUCT_OUT}dra72-evm-lcd10.dtb"
+else
+	environment="${PRODUCT_OUT}dra7-evm-lcd10.dtb"
 fi
 
 # Create the filename
