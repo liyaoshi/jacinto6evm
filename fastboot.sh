@@ -63,6 +63,7 @@ fi
 #product=`${FASTBOOT} getvar product 2>&1 | grep product | awk '{print$2}'`
 cpu=`${FASTBOOT} getvar cpu 2>&1         | grep cpu     | awk '{print$2}'`
 cputype=`${FASTBOOT} getvar secure 2>&1  | grep secure  | awk '{print$2}'`
+boardrev=`${FASTBOOT} getvar board_rev 2>&1  | grep board_rev  | awk '{print$2}'`
 
 
 # Make EMU = HS
@@ -77,11 +78,19 @@ elif [ ${cputype} = "" ] || [ ${cputype} = "GP" ]; then
 	uboot="${PRODUCT_OUT}u-boot.img"
 fi
 
-# Based on cpu, decide the dtb to flash, default fall back to J6
+# Based on cpu, decide the dtb to flash, default fall back to J6 and LCD 10
 if [ ${cpu} = "J6ECO" ]; then
-	environment="${PRODUCT_OUT}dra72-evm-lcd10.dtb"
+	if [ ${boardrev} = "C" ]; then
+		environment="${PRODUCT_OUT}dra72-evm-lcd-osd.dtb"
+	else
+		environment="${PRODUCT_OUT}dra72-evm-lcd10.dtb"
+	fi
 else
-	environment="${PRODUCT_OUT}dra7-evm-lcd10.dtb"
+	if [ ${boardrev} = "H" ]; then
+		environment="${PRODUCT_OUT}dra7-evm-lcd-osd.dtb"
+	else
+		environment="${PRODUCT_OUT}dra7-evm-lcd10.dtb"
+	fi
 fi
 
 # Create the filename
