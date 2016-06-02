@@ -83,13 +83,13 @@ if [ ${cpu} = "J6ECO" ]; then
 	if [ ${boardrev} = "C" ]; then
 		environment="${PRODUCT_OUT}dra72-evm-lcd-osd.dtb"
 	else
-		environment="${PRODUCT_OUT}dra72-evm-lcd10.dtb"
+		environment="${PRODUCT_OUT}dra72-evm-lcd-lg.dtb"
 	fi
 else
 	if [ ${boardrev} = "H" ]; then
 		environment="${PRODUCT_OUT}dra7-evm-lcd-osd.dtb"
 	else
-		environment="${PRODUCT_OUT}dra7-evm-lcd10.dtb"
+		environment="${PRODUCT_OUT}dra7-evm-lcd-lg.dtb"
 	fi
 fi
 
@@ -143,8 +143,8 @@ fi
 echo "Create GPT partition table"
 ${FASTBOOT} oem format
 
-echo "Setting target for bootloader to SPI"
-${FASTBOOT} oem spi
+#echo "Setting target for bootloader to SPI"
+#${FASTBOOT} oem spi
 
 sleep 3
 
