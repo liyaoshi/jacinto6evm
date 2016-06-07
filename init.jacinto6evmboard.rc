@@ -58,9 +58,6 @@ on fs
     mkdir /factory 0775 radio radio
     mount_all /fstab.jacinto6evmboard
 
-# take a wakelock on boot until PM is working
-    write /sys/power/wake_lock hack
-
 service pvrsrvinit /vendor/bin/pvrsrvinit
     class core
     user root
