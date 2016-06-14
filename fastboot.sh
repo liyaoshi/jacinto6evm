@@ -69,7 +69,7 @@ boardrev=`${FASTBOOT} getvar board_rev 2>&1  | grep board_rev  | awk '{print$2}'
 # Make EMU = HS
 if [ ${cputype} = "EMU" ] || [ ${cputype} = "HS" ]; then
 	cputype="HS"
-	xloader="${PRODUCT_OUT}${cputype}_QSPI_MLO"
+	xloader="${PRODUCT_OUT}u-boot-spl_HS_X-LOADER"
 	uboot="${PRODUCT_OUT}${cputype}_u-boot.img"
 # If fastboot does not support getvar default to GP
 elif [ ${cputype} = "" ] || [ ${cputype} = "GP" ]; then
