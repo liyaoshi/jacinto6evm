@@ -143,8 +143,8 @@ fi
 echo "Create GPT partition table"
 ${FASTBOOT} oem format
 
-#echo "Setting target for bootloader to SPI"
-#${FASTBOOT} oem spi
+echo "Setting target for bootloader to SPI"
+${FASTBOOT} oem spi
 
 sleep 3
 
