@@ -63,7 +63,7 @@ fi
 #product=`${FASTBOOT} getvar product 2>&1 | grep product | awk '{print$2}'`
 cpu=`${FASTBOOT} getvar cpu 2>&1         | grep cpu     | awk '{print$2}'`
 cputype=`${FASTBOOT} getvar secure 2>&1  | grep secure  | awk '{print$2}'`
-boardrev=`${FASTBOOT} getvar board_rev 2>&1  | grep board_rev  | awk '{print$2}'`
+boardrev=`${FASTBOOT} getvar board_rev 2>&1  | grep board_rev  | awk '{print$2}' | cut -b 1`
 
 
 # Make EMU = HS
