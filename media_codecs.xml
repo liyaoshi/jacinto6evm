@@ -31,6 +31,7 @@
                 <Limit name="block-size" value="16x16" />
                 <Limit name="blocks-per-second" min="1" max="489600" />
                 <Limit name="bitrate" range="1-62500000" />
+                <Feature name="adaptive-playback" />
             </Type>
 
             <Type name="video/mp4v-es">
