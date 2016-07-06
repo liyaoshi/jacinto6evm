@@ -81,7 +81,7 @@ fi
 # Based on cpu, decide the dtb to flash, default fall back to J6 and LCD 10
 if [ ${cpu} = "J6ECO" ]; then
 	if [ ${boardrev} = "C" ]; then
-		environment="${PRODUCT_OUT}dra72-evm-lcd-osd.dtb"
+		environment="${PRODUCT_OUT}dra72-evm-revc-lcd-osd101t2045.dtb"
 	else
 		environment="${PRODUCT_OUT}dra72-evm-lcd-lg.dtb"
 	fi
