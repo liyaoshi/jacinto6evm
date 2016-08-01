@@ -142,6 +142,13 @@ service lad_dra7xx /system/bin/logwrapper /system/bin/lad_dra7xx -g
     group system
     oneshot
 
+service radio_app /system/bin/logwrapper /system/bin/RadioApp -h eth
+    class main
+    user media
+    group system inet
+    disabled
+    oneshot
+
 service devproxy /system/bin/devproxy
     class main
     disabled
