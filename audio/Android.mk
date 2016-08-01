@@ -13,4 +13,9 @@
 # limitations under the License.
 
 LOCAL_PATH := $(call my-dir)
+
+ifeq ($(APPE_AUDIO),true)
+include $(LOCAL_PATH)/hdmi/Android.mk
+else
 include $(call all-makefiles-under,$(LOCAL_PATH))
+endif
