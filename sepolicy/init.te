@@ -2,8 +2,3 @@
 allow init self:capability sys_module;
 #Create symlinks for storage
 allow init tmpfs:lnk_file create_file_perms;
-
-# /config
-allow init configfs:dir create_dir_perms;
-allow init configfs:file w_file_perms;
-allow init configfs:lnk_file create;
