@@ -1,2 +1,4 @@
 type bluetooth_control, dev_type;
 type rtc, dev_type;
+type hwspinlock_dev, dev_type;
+type uio_dev, dev_type;
