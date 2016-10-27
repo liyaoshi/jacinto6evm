@@ -40,7 +40,7 @@ TARGET_NO_BOOTLOADER := true
 
 BOARD_KERNEL_BASE := 0x80000000
 #BOARD_KERNEL_CMDLINE := console=ttyO2,115200n8 mem=1024M androidboot.console=ttyO2 androidboot.hardware=jacinto6evmboard vram=20M omapfb.vram=0:16M
-BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01f00000
+BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x03000000
 
 TARGET_NO_RADIOIMAGE := true
 TARGET_BOARD_PLATFORM := jacinto6
@@ -79,3 +79,7 @@ BOARD_SEPOLICY_DIRS := device/ti/jacinto6evm/sepolicy
 
 # lidbrm driver
 BOARD_GPU_DRIVERS := omapdrm
+
+# DispSync vsync offsets in nanoseconds
+VSYNC_EVENT_PHASE_OFFSET_NS := 7500000
+SF_VSYNC_EVENT_PHASE_OFFSET_NS := 5000000

@@ -14,6 +14,9 @@
 # limitations under the License.
 #
 
+# Audio Post Processing Engine (APPE)
+APPE_AUDIO := false
+
 ifeq ($(TARGET_PREBUILT_KERNEL),)
 LOCAL_KERNEL := device/ti/jacinto6evm/kernel
 else
@@ -42,13 +45,19 @@ PRODUCT_COPY_FILES := \
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
-	frameworks/native/data/etc/android.hardware.camera.xml:system/etc/permissions/android.hardware.camera.xml \
-	frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
+	frameworks/native/data/etc/android.hardware.camera.xml:system/etc/permissions/android.hardware.camera.xml
 
 # Audio
+ifeq ($(APPE_AUDIO),true)
+PRODUCT_COPY_FILES += \
+	hardware/ti/radio/vis_sdk/packages/android/hal/mixer_paths.xml:system/etc/mixer_paths.xml
+else
 PRODUCT_COPY_FILES += \
 	device/ti/jacinto6evm/audio/primary/mixer_paths.xml:system/etc/mixer_paths.xml \
-	device/ti/jacinto6evm/audio/jamr3/jamr3_mixer_paths.xml:system/etc/jamr3_mixer_paths.xml \
+	device/ti/jacinto6evm/audio/jamr3/jamr3_mixer_paths.xml:system/etc/jamr3_mixer_paths.xml
+endif
+
+PRODUCT_COPY_FILES += \
 	device/ti/jacinto6evm/audio/audio_policy.conf:system/etc/audio_policy.conf
 
 # cpuset configuration
@@ -103,12 +112,15 @@ PRODUCT_PACKAGES += \
 
 # Audio HAL modules
 PRODUCT_PACKAGES += audio.primary.jacinto6
-PRODUCT_PACKAGES += audio.jamr3.jacinto6
 PRODUCT_PACKAGES += audio.hdmi.jacinto6
 # BlueDroid a2dp Audio HAL module
 PRODUCT_PACKAGES += audio.a2dp.default
 # Remote submix
 PRODUCT_PACKAGES += audio.r_submix.default
+# JAMR3 Audio HAL module
+ifneq ($(APPE_AUDIO),true)
+PRODUCT_PACKAGES += audio.jamr3.jacinto6
+endif
 
 PRODUCT_PACKAGES += \
 	tinymix \
