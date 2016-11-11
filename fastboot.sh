@@ -82,6 +82,8 @@ fi
 if [ ${cpu} = "J6ECO" ]; then
 	if [ ${boardrev} = "C" ]; then
 		environment="${PRODUCT_OUT}dra72-evm-revc-lcd-osd101t2045.dtb"
+	elif [ ${boardrev} = "A" ]; then
+		environment="${PRODUCT_OUT}dra71-evm-lcd-auo-g101evn01.0.dtb"
 	else
 		environment="${PRODUCT_OUT}dra72-evm-lcd-lg.dtb"
 	fi
