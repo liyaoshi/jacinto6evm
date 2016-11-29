@@ -42,7 +42,6 @@ on boot
     chmod 0755 /sys/kernel/debug/tracing
 
 on fs
-    mkdir /factory 0775 radio radio
     mount_all /fstab.jacinto6evmboard
 
 service pvrsrvinit /vendor/bin/pvrsrvinit
