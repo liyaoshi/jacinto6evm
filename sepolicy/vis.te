@@ -1,0 +1,20 @@
+type vis, domain;
+type vis_exec, exec_type, file_type;
+
+# Started by init
+init_daemon_domain(vis)
+
+# Allow access to IPC related resources
+allow vis devpts:chr_file { read write ioctl getattr };
+allow vis fwmarkd_socket:sock_file write;
+allow vis self:socket { create_socket_perms };
+allow vis self:tcp_socket { create_stream_socket_perms };
+allow vis netd:unix_stream_socket connectto;
+allow vis node:tcp_socket node_bind;
+allow vis port:tcp_socket name_bind;
+allow vis lad_data_file:fifo_file { rw_file_perms };
+allow vis cmem_dev:chr_file { rw_file_perms };
+allow vis hwspinlock_dev:chr_file { rw_file_perms };
+
+# Allow access to I2C for audio codec configuration
+allow vis i2c_dev:chr_file { rw_file_perms };

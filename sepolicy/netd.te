@@ -2,3 +2,7 @@
 # Ignore them
 dontaudit netd self:capability sys_module;
 dontaudit netd kernel:system module_request;
+
+# VIS
+allow netd vis:fd use;
+allow netd vis:tcp_socket { rw_socket_perms };

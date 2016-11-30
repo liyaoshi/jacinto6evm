@@ -6,3 +6,6 @@ allow init tmpfs:lnk_file create_file_perms;
 # /config
 allow init configfs:dir create_dir_perms;
 allow init configfs:{ file lnk_file } create_file_perms;
+
+# Allow module insertion
+allow init system_file:system module_load;
