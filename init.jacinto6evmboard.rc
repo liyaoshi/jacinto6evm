@@ -21,17 +21,6 @@ on post-fs-data
 # enabling thermal zone for mpu
     write /sys/class/thermal/thermal_zone0/mode enabled
 
-# Create GPS folders and set its permissions
-    mkdir /data/gnss
-    chown system system /data/gnss
-    mkdir /data/gnss/logs/
-    mkdir /data/gnss/nvs/
-    mkdir /data/gnss/log_MD/
-    chown system system /data/gnss/logs/
-    chown system system /data/gnss/nvs/
-    chown system system /data/gnss/log_MD/
-    insmod /system/lib/modules/gps_drv.ko
-
 on boot
 
     # execute script to set cpuset configuration
@@ -148,17 +137,3 @@ service radio_app /system/bin/RadioApp -h eth
     group system inet
     disabled
     oneshot
-
-service devproxy /system/bin/devproxy
-    class main
-    disabled
-    oneshot
-    user system
-    group system
-
-service agnss_connect /system/bin/agnss_connect -p
-    class main
-    disabled
-    oneshot
-    user system
-    group system
