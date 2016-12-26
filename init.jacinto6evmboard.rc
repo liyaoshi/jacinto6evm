@@ -29,13 +29,6 @@ on boot
     # wi-fi
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
     mkdir /data/misc/dhcp 0770 dhcp dhcp
-    insmod /system/lib/modules/compat.ko
-    insmod /system/lib/modules/cfg80211.ko
-    insmod /system/lib/modules/mac80211.ko
-    insmod /system/lib/modules/wlcore.ko
-    insmod /system/lib/modules/wl12xx.ko
-    insmod /system/lib/modules/wl18xx.ko board_type=hdk
-    insmod /system/lib/modules/wlcore_sdio.ko
 
     # CMEM for Radio
     insmod /system/lib/modules/cmemk.ko phys_start=0x95400000 phys_end=0x95800000 pools=20x65536,40x4096 allowOverlap=1
