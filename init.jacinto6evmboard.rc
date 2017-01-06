@@ -1,7 +1,7 @@
 import init.jacinto6evmboard.usb.rc
 
 on early-init
-    mount debugfs /sys/kernel/debug /sys/kernel/debug
+    mount debugfs /sys/kernel/debug /sys/kernel/debug mode=755
 
 on init
     # Support legacy paths
@@ -35,6 +35,11 @@ on boot
 
     # 2d blitter
     insmod /system/lib/modules/galcore.ko physSize=0xc0000000
+
+    # Set up kernel tracing, but disable it by default
+    chmod 0222 /sys/kernel/debug/tracing/trace_marker
+    write /sys/kernel/debug/tracing/tracing_on 0
+    chmod 0755 /sys/kernel/debug/tracing
 
 on fs
     mkdir /factory 0775 radio radio
