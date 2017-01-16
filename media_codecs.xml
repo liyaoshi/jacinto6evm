@@ -59,6 +59,9 @@
             </Type>
         </MediaCodec>
     </Decoders>
+    <Settings>
+        <Setting name="max-video-encoder-input-buffers" value="6" />
+    </Settings>
    <Encoders>
         <MediaCodec name="OMX.TI.DUCATI1.VIDEO.H264E" type="video/avc" >
             <Quirk name="requires-allocate-on-input-ports" />
