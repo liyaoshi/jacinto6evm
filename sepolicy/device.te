@@ -3,4 +3,3 @@ type rtc, dev_type;
 type hwspinlock_dev, dev_type;
 type uio_dev, dev_type;
 type cmem_dev, dev_type;
-type i2c_dev, dev_type;

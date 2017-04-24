@@ -17,4 +17,4 @@ allow vis cmem_dev:chr_file { rw_file_perms };
 allow vis hwspinlock_dev:chr_file { rw_file_perms };
 
 # Allow access to I2C for audio codec configuration
-allow vis i2c_dev:chr_file { rw_file_perms };
+allow vis i2c_device:chr_file { rw_file_perms };

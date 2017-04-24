@@ -36,9 +36,6 @@
 #VIS (RadioApp)
 /system/bin/RadioApp		u:object_r:vis_exec:s0
 
-#I2C
-/dev/i2c-[0-9]+			u:object_r:i2c_dev:s0
-
 #CMEM
 /dev/cmem			u:object_r:cmem_dev:s0
 
