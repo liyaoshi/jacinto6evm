@@ -32,6 +32,7 @@ PRODUCT_COPY_FILES := \
 	device/ti/jacinto6evm/fstab.jacinto6evmboard:root/fstab.jacinto6evmboard \
 	device/ti/jacinto6evm/media_profiles.xml:system/etc/media_profiles.xml \
 	device/ti/jacinto6evm/media_codecs.xml:system/etc/media_codecs.xml \
+	device/ti/jacinto6evm/media_codecs_performance.xml:system/etc/media_codecs_performance.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:system/etc/media_codecs_google_video.xml \
 	frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
@@ -147,5 +148,6 @@ $(call inherit-product-if-exists, hardware/ti/dra7xx/jacinto6.mk)
 #$(call inherit-product-if-exists, hardware/ti/wpan/ti-wpan-products.mk)
 $(call inherit-product-if-exists, device/ti/proprietary-open/jacinto6/ti-jacinto6-vendor.mk)
 $(call inherit-product-if-exists, device/ti/proprietary-open/jacinto6/ducati-full_jacinto6evm.mk)
+$(call inherit-product-if-exists, device/ti/proprietary-open/jacinto6/touch-full_jacinto6evm.mk)
 $(call inherit-product-if-exists, device/ti/proprietary-open/wl12xx/wlan/wl12xx-wlan-fw-products.mk)
 $(call inherit-product-if-exists, device/ti/proprietary-open/wl12xx/wpan/wl12xx-wpan-fw-products.mk)

@@ -29,6 +29,3 @@
 # ipc
 /dev/uio0                 0660   media system
 /dev/hwspinlock           0660   media system
-
-# for GNSS
-/dev/tigps                0666   root	    root

@@ -31,6 +31,7 @@
                 <Limit name="block-size" value="16x16" />
                 <Limit name="blocks-per-second" min="1" max="489600" />
                 <Limit name="bitrate" range="1-62500000" />
+                <Limit name="concurrent-instances" max="5" />
                 <Feature name="adaptive-playback" />
             </Type>
 
@@ -40,6 +41,7 @@
                 <Limit name="block-size" value="16x16" />
                 <Limit name="blocks-per-second" min="1" max="489600" />
                 <Limit name="bitrate" range="1-62500000" />
+                <Limit name="concurrent-instances" max="5" />
             </Type>
 
             <Type name="video/3gpp">
@@ -48,6 +50,7 @@
                 <Limit name="block-size" value="16x16" />
                 <Limit name="blocks-per-second" min="1" max="489600" />
                 <Limit name="bitrate" range="1-62500000" />
+                <Limit name="concurrent-instances" max="5" />
             </Type>
 
             <Type name="video/mpeg2">
@@ -56,9 +59,13 @@
                 <Limit name="block-size" value="16x16" />
                 <Limit name="blocks-per-second" min="1" max="489600" />
                 <Limit name="bitrate" range="1-62500000" />
+                <Limit name="concurrent-instances" max="5" />
             </Type>
         </MediaCodec>
     </Decoders>
+    <Settings>
+        <Setting name="max-video-encoder-input-buffers" value="6" />
+    </Settings>
    <Encoders>
         <MediaCodec name="OMX.TI.DUCATI1.VIDEO.H264E" type="video/avc" >
             <Quirk name="requires-allocate-on-input-ports" />
@@ -68,6 +75,7 @@
             <Limit name="alignment" value="16x16" />
             <Limit name="size" min="96x80" max="1920x1088" />
             <Limit name="blocks-per-second" min="1" max="489600" />
+            <Limit name="concurrent-instances" max="5" />
         </MediaCodec>
     </Encoders>
     <Include href="media_codecs_google_video.xml" />

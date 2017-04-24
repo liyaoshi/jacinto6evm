@@ -25,6 +25,23 @@
 #cpuset script
 /system/bin/init.jacinto6evmboard.cpuset.sh	u:object_r:init-cpuset-sh_exec:s0
 
+#lad_dra7xx
+/system/bin/lad_dra7xx		u:object_r:lad_dra7xx_exec:s0
+/data/lad(/.*)?			u:object_r:lad_data_file:s0
+
+#hwspinlock and uio
+/dev/hwspinlock			u:object_r:hwspinlock_dev:s0
+/dev/uio0			u:object_r:uio_dev:s0
+
+#VIS (RadioApp)
+/system/bin/RadioApp		u:object_r:vis_exec:s0
+
+#I2C
+/dev/i2c-[0-9]+			u:object_r:i2c_dev:s0
+
+#CMEM
+/dev/cmem			u:object_r:cmem_dev:s0
+
 #Block devices
 /dev/block/platform/44000000.ocp/480b4000.mmc/by-name/system     u:object_r:system_block_device:s0
 /dev/block/platform/44000000.ocp/480b4000.mmc/by-name/recovery   u:object_r:recovery_block_device:s0

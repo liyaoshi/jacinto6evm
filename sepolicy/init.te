@@ -2,3 +2,5 @@
 allow init self:capability sys_module;
 #Create symlinks for storage
 allow init tmpfs:lnk_file create_file_perms;
+# Allow module insertion
+allow init system_file:system module_load;
