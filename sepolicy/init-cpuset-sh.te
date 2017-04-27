@@ -4,4 +4,4 @@ type init-cpuset-sh_exec, exec_type, file_type;
 init_daemon_domain(init-cpuset-sh)
 
 allow init-cpuset-sh system_file:file execute_no_trans;
-allow init-cpuset-sh shell_exec:file read;
+allow init-cpuset-sh shell_exec:file { read getattr };

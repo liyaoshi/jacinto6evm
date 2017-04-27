@@ -4,3 +4,6 @@ allow init self:capability sys_module;
 allow init tmpfs:lnk_file create_file_perms;
 # Allow module insertion
 allow init system_file:system module_load;
+# Configfs
+allow init configfs:file write;
+allow init configfs:lnk_file { create unlink } ;
