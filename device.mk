@@ -137,7 +137,8 @@ PRODUCT_PACKAGES += \
 	libtitransportrpmsg
 
 # Launcher3
-PRODUCT_PACKAGES += Launcher3
+PRODUCT_PACKAGES += Launcher3 \
+		WallpaperPicker
 
 # Enable AAC 5.1 decode (decoder)
 PRODUCT_PROPERTY_OVERRIDES += \
