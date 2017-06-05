@@ -23,9 +23,25 @@ else
 LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
 endif
 
+PRODUCT_PACKAGES += \
+   android.hardware.wifi@1.0-service \
+   android.hardware.graphics.allocator@2.0-impl \
+   android.hardware.graphics.allocator@2.0-service \
+   android.hardware.graphics.mapper@2.0-impl \
+   android.hardware.memtrack@1.0-impl \
+   android.hardware.usb@1.0-service \
+   android.hardware.power@1.0-impl \
+   android.hardware.audio@2.0-impl \
+   android.hardware.audio.effect@2.0-impl \
+   android.hardware.broadcastradio@1.0-impl \
+   android.hardware.soundtrigger@2.0-impl \
+   android.hardware.keymaster@3.0-impl \
+   android.hardware.keymaster@3.0-service
+
 PRODUCT_COPY_FILES := \
 	$(LOCAL_KERNEL):kernel \
 	device/ti/jacinto6evm/tablet_core_hardware_jacinto6evm.xml:system/etc/permissions/tablet_core_hardware_jacinto6evm.xml \
+	device/ti/jacinto6evm/manifest.xml:system/vendor/manifest.xml \
 	device/ti/jacinto6evm/init.jacinto6evmboard.rc:root/init.jacinto6evmboard.rc \
 	device/ti/jacinto6evm/init.jacinto6evmboard.usb.rc:root/init.jacinto6evmboard.usb.rc \
 	device/ti/jacinto6evm/ueventd.jacinto6evmboard.rc:root/ueventd.jacinto6evmboard.rc \
@@ -83,10 +99,11 @@ PRODUCT_PACKAGES += \
 	com.android.future.usb.accessory
 
 PRODUCT_PROPERTY_OVERRIDES += \
-	ro.sf.lcd_density=160
+	ro.sf.lcd_density=240
 
 # WI-Fi
 PRODUCT_PACKAGES += \
+	wificond \
 	wpa_supplicant \
 	wpa_supplicant.conf \
 	wpa_supplicant_overlay.conf \
@@ -102,7 +119,6 @@ PRODUCT_PACKAGES += \
 	wlconf
 
 PRODUCT_PACKAGES += \
-	LegacyCamera \
 	camera_test \
 	ion_tiler_test \
 	iontest \
@@ -144,7 +160,7 @@ PRODUCT_PACKAGES += Launcher3 \
 PRODUCT_PROPERTY_OVERRIDES += \
 	media.aac_51_output_enabled=true
 
-$(call inherit-product, frameworks/native/build/tablet-7in-hdpi-1024-dalvik-heap.mk)
+#$(call inherit-product, frameworks/native/build/tablet-7in-hdpi-1024-dalvik-heap.mk)
 $(call inherit-product-if-exists, hardware/ti/dra7xx/jacinto6.mk)
 #$(call inherit-product-if-exists, hardware/ti/wpan/ti-wpan-products.mk)
 $(call inherit-product-if-exists, device/ti/proprietary-open/jacinto6/ti-jacinto6-vendor.mk)
