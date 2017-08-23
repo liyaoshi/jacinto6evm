@@ -13,8 +13,8 @@
 /dev/pvr_sync			u:object_r:gpu_device:s0
 /dev/sw_sync			u:object_r:gpu_device:s0
 
-/system/vendor/bin/pvrsrvctl	u:object_r:pvr_exec:s0
-/system/vendor/bin/pvrsrvinit	u:object_r:pvr_exec:s0
+/vendor/bin/pvrsrvctl		u:object_r:pvr_exec:s0
+/vendor/bin/pvrsrvinit		u:object_r:pvr_exec:s0
 
 #rpmsg
 /dev/rpmsg-dce			u:object_r:rpmsg_device:s0

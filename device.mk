@@ -41,7 +41,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES := \
 	$(LOCAL_KERNEL):kernel \
 	device/ti/jacinto6evm/tablet_core_hardware_jacinto6evm.xml:system/etc/permissions/tablet_core_hardware_jacinto6evm.xml \
-	device/ti/jacinto6evm/manifest.xml:system/vendor/manifest.xml \
+	device/ti/jacinto6evm/manifest.xml:vendor/manifest.xml \
 	device/ti/jacinto6evm/init.jacinto6evmboard.rc:root/init.jacinto6evmboard.rc \
 	device/ti/jacinto6evm/init.jacinto6evmboard.usb.rc:root/init.jacinto6evmboard.usb.rc \
 	device/ti/jacinto6evm/ueventd.jacinto6evmboard.rc:root/ueventd.jacinto6evmboard.rc \
