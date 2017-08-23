@@ -1,7 +1,7 @@
 #Bluettoth tty device
 /dev/hci_tty			u:object_r:bluetooth_control:s0
-/dev/ttyS2			u:object_r:hci_attach_dev:s0
-/system/bin/uim-sysfs		u:object_r:hci_attach_exec:s0
+#/dev/ttyS2			u:object_r:hci_attach_dev:s0
+#/system/bin/uim-sysfs		u:object_r:hci_attach_exec:s0
 
 #Console
 /dev/ttyS0			u:object_r:console_device:s0

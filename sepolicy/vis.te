@@ -7,7 +7,7 @@ init_daemon_domain(vis)
 # Allow access to IPC related resources
 allow vis devpts:chr_file { read write ioctl getattr };
 allow vis fwmarkd_socket:sock_file write;
-allow vis self:socket { create_socket_perms };
+allow vis self:socket { create_socket_perms_no_ioctl };
 allow vis self:tcp_socket { create_stream_socket_perms };
 allow vis netd:unix_stream_socket connectto;
 allow vis node:tcp_socket node_bind;

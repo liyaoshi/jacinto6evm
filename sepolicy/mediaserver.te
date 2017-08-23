@@ -7,6 +7,6 @@ allow mediaserver device:dir { read open };
 allow mediaserver lad_data_file:fifo_file { create_file_perms };
 allow mediaserver hwspinlock_dev:chr_file { rw_file_perms };
 allow mediaserver cmem_dev:chr_file { rw_file_perms };
-allow mediaserver self:socket { create_socket_perms };
+allow mediaserver self:socket { create_socket_perms_no_ioctl };
 allow mediaserver self:tcp_socket { create_stream_socket_perms };
 allow mediaserver ctl_default_prop:property_service set;
