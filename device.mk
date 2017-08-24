@@ -24,6 +24,7 @@ LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
 endif
 
 PRODUCT_PACKAGES += \
+   vehicle.default \
    android.hardware.wifi@1.0-service \
    android.hardware.graphics.allocator@2.0-impl \
    android.hardware.graphics.allocator@2.0-service \
@@ -51,6 +52,7 @@ PRODUCT_COPY_FILES := \
 	device/ti/jacinto6evm/media_codecs_performance.xml:system/etc/media_codecs_performance.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:system/etc/media_codecs_google_video.xml \
+	frameworks/native/data/etc/android.hardware.type.automotive.xml:system/etc/permissions/android.hardware.type.automotive.xml \
 	frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
 	frameworks/native/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
 	frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
@@ -91,6 +93,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.opengles.version=131072
 
 PRODUCT_CHARACTERISTICS := tablet,nosdcard
+
+PRODUCT_PACKAGE_OVERLAYS := packages/services/Car/car_product/overlay
 
 DEVICE_PACKAGE_OVERLAYS := \
 	device/ti/jacinto6evm/overlay
@@ -159,6 +163,12 @@ PRODUCT_PACKAGES += Launcher3 \
 # Enable AAC 5.1 decode (decoder)
 PRODUCT_PROPERTY_OVERRIDES += \
 	media.aac_51_output_enabled=true
+
+PRODUCT_PROPERTY_OVERRIDES += \
+	android.car.drawer.unlimited=true \
+	android.car.hvac.demo=true \
+	com.android.car.radio.demo=true \
+	com.android.car.radio.demo.dual=true
 
 #$(call inherit-product, frameworks/native/build/tablet-7in-hdpi-1024-dalvik-heap.mk)
 $(call inherit-product-if-exists, hardware/ti/dra7xx/jacinto6.mk)
