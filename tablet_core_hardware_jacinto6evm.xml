@@ -23,6 +23,8 @@
      devices.
 -->
 <permissions>
+    <feature name="android.software.cts" />
+    <feature name="android.hardware.audio.output" />
     <feature name="android.hardware.touchscreen" />
     <feature name="android.hardware.faketouch" />
     <feature name="android.hardware.microphone" />
