@@ -94,8 +94,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 PRODUCT_CHARACTERISTICS := tablet,nosdcard
 
-PRODUCT_PACKAGE_OVERLAYS := packages/services/Car/car_product/overlay
-
 DEVICE_PACKAGE_OVERLAYS := \
 	device/ti/jacinto6evm/overlay
 
