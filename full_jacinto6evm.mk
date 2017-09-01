@@ -21,6 +21,9 @@
 # lines, full and toro, hence its name.
 #
 
+PRODUCT_COPY_FILES += \
+	device/generic/car/common/bootanimations/bootanimation-832.zip:system/media/bootanimation.zip
+
 # Inherit from those products. Most specific first.
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
 $(call inherit-product, packages/services/Car/car_product/build/car.mk)
