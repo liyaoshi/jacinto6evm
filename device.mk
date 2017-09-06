@@ -18,7 +18,7 @@
 APPE_AUDIO := false
 
 ifeq ($(TARGET_PREBUILT_KERNEL),)
-LOCAL_KERNEL := device/ti/jacinto6evm/kernel
+LOCAL_KERNEL := $(KERNELDIR)/arch/arm/boot/zImage
 else
 LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
 endif
