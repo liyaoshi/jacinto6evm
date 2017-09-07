@@ -43,9 +43,9 @@ PRODUCT_COPY_FILES := \
 	$(LOCAL_KERNEL):kernel \
 	device/ti/jacinto6evm/tablet_core_hardware_jacinto6evm.xml:system/etc/permissions/tablet_core_hardware_jacinto6evm.xml \
 	device/ti/jacinto6evm/manifest.xml:vendor/manifest.xml \
-	device/ti/jacinto6evm/init.jacinto6evmboard.rc:root/init.jacinto6evmboard.rc \
-	device/ti/jacinto6evm/init.jacinto6evmboard.usb.rc:root/init.jacinto6evmboard.usb.rc \
-	device/ti/jacinto6evm/ueventd.jacinto6evmboard.rc:root/ueventd.jacinto6evmboard.rc \
+	device/ti/jacinto6evm/init.jacinto6evmboard.rc:vendor/etc/init/hw/init.jacinto6evmboard.rc \
+	device/ti/jacinto6evm/init.jacinto6evmboard.usb.rc:vendor/etc/init/hw/init.jacinto6evmboard.usb.rc \
+	device/ti/jacinto6evm/ueventd.jacinto6evmboard.rc:vendor/ueventd.rc \
 	device/ti/jacinto6evm/fstab.jacinto6evmboard:root/fstab.jacinto6evmboard \
 	device/ti/jacinto6evm/media_profiles.xml:system/etc/media_profiles.xml \
 	device/ti/jacinto6evm/media_codecs.xml:system/etc/media_codecs.xml \
@@ -82,7 +82,7 @@ PRODUCT_COPY_FILES += \
 
 # cpuset configuration
 PRODUCT_COPY_FILES += \
-	device/ti/jacinto6evm/init.jacinto6evmboard.cpuset.sh:system/bin/init.jacinto6evmboard.cpuset.sh
+	device/ti/jacinto6evm/init.jacinto6evmboard.cpuset.sh:vendor/bin/init.jacinto6evmboard.cpuset.sh
 
 PRODUCT_PROPERTY_OVERRIDES := \
 	hwui.render_dirty_regions=false

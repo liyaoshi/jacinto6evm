@@ -23,7 +23,7 @@
 /dev/rtc0			u:object_r:rtc:s0
 
 #cpuset script
-/system/bin/init.jacinto6evmboard.cpuset.sh	u:object_r:init-cpuset-sh_exec:s0
+/vendor/bin/init.jacinto6evmboard.cpuset.sh	u:object_r:init-cpuset-sh_exec:s0
 
 #lad_dra7xx
 /system/bin/lad_dra7xx		u:object_r:lad_dra7xx_exec:s0
