@@ -43,6 +43,8 @@ on boot
 
 on fs
     mount_all /fstab.jacinto6evmboard
+
+on late-init
     # Load modules
     exec u:r:modprobe:s0 -- /system/bin/modprobe -a -d \
          /vendor/lib/modules wl18xx.ko wlcore.ko wlcore_sdio.ko \
