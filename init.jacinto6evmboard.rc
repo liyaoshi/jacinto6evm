@@ -52,7 +52,8 @@ on late-init
                              dra7-evm-encoder-tpd12s015.ko encoder-sii9022.ko encoder-tc358768.ko encoder-tpd12s015.ko \
                              ti-fpd3-serdes.ko \
                              connector-hdmi.ko \
-                             panel-dpi.ko leds-tlc591xx.ko gpio_backlight.ko led_bl.ko pwm_bl.ko
+                             panel-dpi.ko leds-tlc591xx.ko gpio_backlight.ko led_bl.ko pwm_bl.ko \
+                             edt-ft5x06.ko goodix.ko input-polldev.ko atmel_mxt_ts.ko ldc3001_ts.ko pixcir_i2c_ts.ko
 
 service pvrsrvinit /vendor/bin/pvrsrvinit
     class core
