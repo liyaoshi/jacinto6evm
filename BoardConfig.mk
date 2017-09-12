@@ -94,6 +94,17 @@ BOARD_VENDOR_KERNEL_MODULES := \
 	$(KERNELDIR)/drivers/net/wireless/ti/wl18xx/wl18xx.ko \
 	$(KERNELDIR)/drivers/net/wireless/ti/wlcore/wlcore.ko \
 	$(KERNELDIR)/drivers/net/wireless/ti/wlcore/wlcore_sdio.ko\
-	$(KERNELDIR)/drivers/scsi/scsi_mod.ko\
-	$(KERNELDIR)/drivers/scsi/sd_mod.ko\
-	$(KERNELDIR)/drivers/usb/storage/usb-storage.ko
+	$(KERNELDIR)/drivers/scsi/scsi_mod.ko \
+	$(KERNELDIR)/drivers/scsi/sd_mod.ko \
+	$(KERNELDIR)/drivers/usb/storage/usb-storage.ko \
+	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/connector-hdmi.ko \
+	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/dra7-evm-encoder-tpd12s015.ko \
+	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/encoder-sii9022.ko \
+	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/encoder-tc358768.ko \
+	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/encoder-tpd12s015.ko \
+	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/panel-dpi.ko \
+	$(KERNELDIR)/drivers/video/serdes/ti-fpd3-serdes.ko \
+	$(KERNELDIR)/drivers/leds/leds-tlc591xx.ko \
+	$(KERNELDIR)/drivers/video/backlight/gpio_backlight.ko \
+	$(KERNELDIR)/drivers/video/backlight/led_bl.ko \
+	$(KERNELDIR)/drivers/video/backlight/pwm_bl.ko
