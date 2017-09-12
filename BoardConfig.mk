@@ -113,4 +113,10 @@ BOARD_VENDOR_KERNEL_MODULES := \
 	$(KERNELDIR)/drivers/input/touchscreen/goodix.ko \
 	$(KERNELDIR)/drivers/input/touchscreen/atmel_mxt_ts.ko \
 	$(KERNELDIR)/drivers/input/touchscreen/ldc3001_ts.ko \
-	$(KERNELDIR)/drivers/input/touchscreen/pixcir_i2c_ts.ko
+	$(KERNELDIR)/drivers/input/touchscreen/pixcir_i2c_ts.ko \
+	$(KERNELDIR)/sound/soc/codecs/snd-soc-tlv320aic3x.ko \
+	$(KERNELDIR)/drivers/gpio/gpio-mcp23s08.ko \
+	$(KERNELDIR)/drivers/gpio/gpio-pca953x.ko \
+	$(KERNELDIR)/drivers/media/i2c/ov1063x.ko \
+	$(KERNELDIR)/drivers/media/i2c/ov490.ko \
+	$(KERNELDIR)/drivers/media/i2c/tvp5158.ko
