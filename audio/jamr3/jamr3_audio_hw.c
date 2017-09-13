@@ -95,8 +95,10 @@ struct j6_stream_in {
 };
 
 static const char *supported_cards[] = {
-    "DRA7xxJAMR3",
+    "DRA7xx-JAMR3",
 };
+
+#define MAX_CARD_COUNT                  10
 
 #define SUPPORTED_IN_DEVICES            AUDIO_DEVICE_IN_LINE
 
@@ -119,17 +121,19 @@ struct pcm_config pcm_config_capture = {
 
 static int find_card_index(const char *supported_cards[], int num_supported)
 {
-    char name[256] = "";
+    struct mixer *mixer;
+    const char *name;
     int card = 0;
     int found = 0;
     int i;
 
-#ifdef OMAP_ENHANCEMENT
     do {
         /* returns an error after last valid card */
-        int ret = mixer_get_card_name(card, name, sizeof(name));
-        if (ret)
+        mixer = mixer_open(card);
+        if (!mixer)
             break;
+
+        name = mixer_get_name(mixer);
 
         for (i = 0; i < num_supported; ++i) {
             if (supported_cards[i] && !strcmp(name, supported_cards[i])) {
@@ -138,12 +142,13 @@ static int find_card_index(const char *supported_cards[], int num_supported)
                 break;
             }
         }
+
+        mixer_close(mixer);
     } while (!found && (card++ < MAX_CARD_COUNT));
-#endif
 
     /* Use default card number if not found */
     if (!found)
-        card = 0;
+        card = 2;
 
     return card;
 }
