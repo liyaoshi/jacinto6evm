@@ -70,15 +70,15 @@ PRODUCT_COPY_FILES += \
 # Audio
 ifeq ($(APPE_AUDIO),true)
 PRODUCT_COPY_FILES += \
-	hardware/ti/radio/vis_sdk/packages/android/hal/mixer_paths.xml:system/etc/mixer_paths.xml
+	hardware/ti/radio/vis_sdk/packages/android/hal/mixer_paths.xml:vendor/etc/mixer_paths.xml
 else
 PRODUCT_COPY_FILES += \
-	device/ti/jacinto6evm/audio/primary/mixer_paths.xml:system/etc/mixer_paths.xml \
-	device/ti/jacinto6evm/audio/jamr3/jamr3_mixer_paths.xml:system/etc/jamr3_mixer_paths.xml
+	device/ti/jacinto6evm/audio/primary/mixer_paths.xml:vendor/etc/mixer_paths.xml \
+	device/ti/jacinto6evm/audio/jamr3/jamr3_mixer_paths.xml:vendor/etc/jamr3_mixer_paths.xml
 endif
 
 PRODUCT_COPY_FILES += \
-	device/ti/jacinto6evm/audio/audio_policy.conf:system/etc/audio_policy.conf
+	device/ti/jacinto6evm/audio/audio_policy.conf:vendor/etc/audio_policy.conf
 
 # cpuset configuration
 PRODUCT_COPY_FILES += \

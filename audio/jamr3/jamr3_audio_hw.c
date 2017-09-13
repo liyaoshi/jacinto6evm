@@ -107,7 +107,7 @@ static const char *supported_cards[] = {
 #define CAPTURE_PERIOD_COUNT            4
 #define CAPTURE_BUFFER_SIZE             (CAPTURE_PERIOD_SIZE * CAPTURE_PERIOD_COUNT)
 
-#define MIXER_XML_PATH                  "/system/etc/jamr3_mixer_paths.xml"
+#define MIXER_XML_PATH                  "/vendor/etc/jamr3_mixer_paths.xml"
 
 struct pcm_config pcm_config_capture = {
     .channels        = 2,

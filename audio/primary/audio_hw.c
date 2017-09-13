@@ -172,6 +172,8 @@ static const char *supported_bt_cards[] = {
 #define BT_PERIOD_COUNT                 4
 #define BT_BUFFER_SIZE                  (BT_PERIOD_SIZE * BT_PERIOD_COUNT)
 
+#define MIXER_XML_PATH                  "/vendor/etc/mixer_paths.xml"
+
 struct pcm_config pcm_config_capture = {
     .channels        = 2,
     .rate            = CAPTURE_SAMPLE_RATE,
@@ -1780,7 +1782,7 @@ static int adev_open(const hw_module_t* module, const char* name,
     adev->in_call = false;
     adev->mode = AUDIO_MODE_NORMAL;
 
-    adev->route = audio_route_init(adev->card, NULL);
+    adev->route = audio_route_init(adev->card, MIXER_XML_PATH);
     if (!adev->route) {
         ALOGE("Unable to initialize audio routes");
         free(adev);
