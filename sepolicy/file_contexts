@@ -26,7 +26,7 @@
 /vendor/bin/init.jacinto6evmboard.cpuset.sh	u:object_r:init-cpuset-sh_exec:s0
 
 #lad_dra7xx
-/system/bin/lad_dra7xx		u:object_r:lad_dra7xx_exec:s0
+/vendor/bin/lad_dra7xx		u:object_r:lad_dra7xx_exec:s0
 /data/lad(/.*)?			u:object_r:lad_data_file:s0
 
 #hwspinlock and uio
