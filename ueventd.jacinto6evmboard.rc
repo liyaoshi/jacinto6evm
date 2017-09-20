@@ -18,14 +18,14 @@
 /dev/hci_tty              0666   bluetooth bluetooth
 
 # Radio Tuners
-/dev/i2c-0                0660   media system
-/dev/i2c-1                0660   media system
-/dev/i2c-3                0660   media system
-/dev/i2c-4                0660   media system
+/dev/i2c-0                0660   system media
+/dev/i2c-1                0660   system media
+/dev/i2c-3                0660   system media
+/dev/i2c-4                0660   system media
 
 # cmem
-/dev/cmem                 0660   media system
+/dev/cmem                 0660   system media
 
 # ipc
-/dev/uio0                 0660   media system
-/dev/hwspinlock           0660   media system
+/dev/uio0                 0660   system media
+/dev/hwspinlock           0660   system media
