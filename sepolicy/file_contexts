@@ -34,7 +34,7 @@
 /dev/uio0			u:object_r:uio_dev:s0
 
 #VIS (RadioApp)
-/system/bin/RadioApp		u:object_r:vis_exec:s0
+/vendor/bin/RadioApp		u:object_r:vis_exec:s0
 
 #CMEM
 /dev/cmem			u:object_r:cmem_dev:s0
