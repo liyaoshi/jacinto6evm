@@ -42,48 +42,48 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_COPY_FILES := \
 	$(LOCAL_KERNEL):kernel \
-	device/ti/jacinto6evm/tablet_core_hardware_jacinto6evm.xml:system/etc/permissions/tablet_core_hardware_jacinto6evm.xml \
-	device/ti/jacinto6evm/manifest.xml:vendor/manifest.xml \
-	device/ti/jacinto6evm/init.jacinto6evmboard.rc:vendor/etc/init/hw/init.jacinto6evmboard.rc \
-	device/ti/jacinto6evm/init.jacinto6evmboard.usb.rc:vendor/etc/init/hw/init.jacinto6evmboard.usb.rc \
-	device/ti/jacinto6evm/ueventd.jacinto6evmboard.rc:vendor/ueventd.rc \
-	device/ti/jacinto6evm/fstab.jacinto6evmboard:root/fstab.jacinto6evmboard \
-	device/ti/jacinto6evm/media_profiles.xml:system/etc/media_profiles.xml \
-	device/ti/jacinto6evm/media_codecs.xml:system/etc/media_codecs.xml \
-	device/ti/jacinto6evm/media_codecs_performance.xml:system/etc/media_codecs_performance.xml \
-	frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
-	frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:system/etc/media_codecs_google_video.xml \
-	frameworks/native/data/etc/android.hardware.type.automotive.xml:system/etc/permissions/android.hardware.type.automotive.xml \
-	frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
-	frameworks/native/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
-	frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
-	frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
-	frameworks/native/data/etc/android.hardware.ethernet.xml:system/etc/permissions/android.hardware.ethernet.xml \
-	frameworks/native/data/etc/android.software.freeform_window_management.xml:system/etc/permissions/android.software.freeform_window_management.xml \
-	device/ti/jacinto6evm/EP05120M09.idc:system/usr/idc/EP05120M09.idc \
-	device/ti/jacinto6evm/Atmel_maXTouch_Touchscreen.idc:system/usr/idc/Atmel_maXTouch_Touchscreen.idc \
-	device/ti/jacinto6evm/LDC_3001_TouchScreen_Controller.idc:system/usr/idc/LDC_3001_TouchScreen_Controller.idc \
+	device/ti/jacinto6evm/tablet_core_hardware_jacinto6evm.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/tablet_core_hardware_jacinto6evm.xml \
+	device/ti/jacinto6evm/manifest.xml:$(TARGET_COPY_OUT_VENDOR)/manifest.xml \
+	device/ti/jacinto6evm/init.jacinto6evmboard.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.jacinto6evmboard.rc \
+	device/ti/jacinto6evm/init.jacinto6evmboard.usb.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.jacinto6evmboard.usb.rc \
+	device/ti/jacinto6evm/ueventd.jacinto6evmboard.rc:$(TARGET_COPY_OUT_VENDOR)/ueventd.rc \
+	device/ti/jacinto6evm/fstab.jacinto6evmboard:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.jacinto6evmboard \
+	device/ti/jacinto6evm/media_profiles_V1_0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_profiles_V1_0.xml \
+	device/ti/jacinto6evm/media_codecs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs.xml \
+	device/ti/jacinto6evm/media_codecs_performance.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_performance.xml \
+	frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_audio.xml \
+	frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_video.xml \
+	frameworks/native/data/etc/android.hardware.type.automotive.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.type.automotive.xml \
+	frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml \
+	frameworks/native/data/etc/android.hardware.wifi.direct.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.direct.xml \
+	frameworks/native/data/etc/android.hardware.usb.host.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.host.xml \
+	frameworks/native/data/etc/android.hardware.usb.accessory.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.accessory.xml \
+	frameworks/native/data/etc/android.hardware.ethernet.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.ethernet.xml \
+	frameworks/native/data/etc/android.software.freeform_window_management.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.freeform_window_management.xml \
+	device/ti/jacinto6evm/EP05120M09.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/EP05120M09.idc \
+	device/ti/jacinto6evm/Atmel_maXTouch_Touchscreen.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/Atmel_maXTouch_Touchscreen.idc \
+	device/ti/jacinto6evm/LDC_3001_TouchScreen_Controller.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/LDC_3001_TouchScreen_Controller.idc \
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
-	frameworks/native/data/etc/android.hardware.camera.xml:system/etc/permissions/android.hardware.camera.xml
+	frameworks/native/data/etc/android.hardware.camera.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.xml
 
 # Audio
 ifeq ($(APPE_AUDIO),true)
 PRODUCT_COPY_FILES += \
-	hardware/ti/radio/vis_sdk/packages/android/hal/mixer_paths.xml:vendor/etc/mixer_paths.xml
+	hardware/ti/radio/vis_sdk/packages/android/hal/mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_paths.xml
 else
 PRODUCT_COPY_FILES += \
-	device/ti/jacinto6evm/audio/primary/mixer_paths.xml:vendor/etc/mixer_paths.xml \
-	device/ti/jacinto6evm/audio/jamr3/jamr3_mixer_paths.xml:vendor/etc/jamr3_mixer_paths.xml
+	device/ti/jacinto6evm/audio/primary/mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_paths.xml \
+	device/ti/jacinto6evm/audio/jamr3/jamr3_mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/jamr3_mixer_paths.xml
 endif
 
 PRODUCT_COPY_FILES += \
-	device/ti/jacinto6evm/audio/audio_policy.conf:vendor/etc/audio_policy.conf
+	device/ti/jacinto6evm/audio/audio_policy.conf:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy.conf
 
 # cpuset configuration
 PRODUCT_COPY_FILES += \
-	device/ti/jacinto6evm/init.jacinto6evmboard.cpuset.sh:vendor/bin/init.jacinto6evmboard.cpuset.sh
+	device/ti/jacinto6evm/init.jacinto6evmboard.cpuset.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.jacinto6evmboard.cpuset.sh
 
 PRODUCT_PROPERTY_OVERRIDES := \
 	hwui.render_dirty_regions=false

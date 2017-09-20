@@ -42,7 +42,7 @@ on boot
     chmod 0755 /sys/kernel/debug/tracing
 
 on fs
-    mount_all /fstab.jacinto6evmboard
+    mount_all /vendor/etc/fstab.jacinto6evmboard
 
 on late-init
     # Load modules
