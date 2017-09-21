@@ -23,6 +23,8 @@ else
 LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
 endif
 
+USE_XML_AUDIO_POLICY_CONF := 1
+
 PRODUCT_PACKAGES += \
    vehicle.default \
    android.hardware.wifi@1.0-service \
@@ -69,17 +71,25 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.camera.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.xml
 
 # Audio
+PRODUCT_COPY_FILES += \
+	frameworks/av/services/audiopolicy/config/a2dp_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/a2dp_audio_policy_configuration.xml \
+	frameworks/av/services/audiopolicy/config/usb_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/usb_audio_policy_configuration.xml \
+	frameworks/av/services/audiopolicy/config/r_submix_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/r_submix_audio_policy_configuration.xml \
+	frameworks/av/services/audiopolicy/config/default_volume_tables.xml:$(TARGET_COPY_OUT_VENDOR)/etc/default_volume_tables.xml \
+	frameworks/av/services/audiopolicy/config/audio_policy_volumes.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_volumes.xml
+
 ifeq ($(APPE_AUDIO),true)
 PRODUCT_COPY_FILES += \
-	hardware/ti/radio/vis_sdk/packages/android/hal/mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_paths.xml
+	hardware/ti/radio/vis_sdk/packages/android/hal/mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_paths.xml \
+	hardware/ti/radio/vis_sdk/packages/android/hal/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/primary_audio_policy_configuration.xml \
+	hardware/ti/radio/vis_sdk/packages/android/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml
+
 else
 PRODUCT_COPY_FILES += \
 	device/ti/jacinto6evm/audio/primary/mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_paths.xml \
-	device/ti/jacinto6evm/audio/jamr3/jamr3_mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/jamr3_mixer_paths.xml
+	device/ti/jacinto6evm/audio/primary/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/primary_audio_policy_configuration.xml \
+	device/ti/jacinto6evm/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml
 endif
-
-PRODUCT_COPY_FILES += \
-	device/ti/jacinto6evm/audio/audio_policy.conf:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy.conf
 
 # cpuset configuration
 PRODUCT_COPY_FILES += \
