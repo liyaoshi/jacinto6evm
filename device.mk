@@ -66,6 +66,14 @@ PRODUCT_COPY_FILES := \
 	device/ti/jacinto6evm/Atmel_maXTouch_Touchscreen.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/Atmel_maXTouch_Touchscreen.idc \
 	device/ti/jacinto6evm/LDC_3001_TouchScreen_Controller.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/LDC_3001_TouchScreen_Controller.idc \
 
+# init.rc for recovery image
+PRODUCT_COPY_FILES += \
+	device/ti/jacinto6evm/init.recovery.jacinto6evmboard.rc:root/init.recovery.jacinto6evmboard.rc
+
+# Static modprobe for recovery image
+PRODUCT_PACKAGES += \
+	toybox_static
+
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.camera.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.xml

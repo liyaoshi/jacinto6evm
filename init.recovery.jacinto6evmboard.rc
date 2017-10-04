@@ -1,0 +1,8 @@
+on late-init
+    # Load modules
+    exec u:r:modprobe:s0 -- /sbin/modprobe -a -d \
+         /lib/modules scsi_mod.ko usb-storage.ko sd_mod.ko \
+                             dra7-evm-encoder-tpd12s015.ko encoder-sii9022.ko encoder-tc358768.ko encoder-tpd12s015.ko \
+                             ti-fpd3-serdes.ko \
+                             connector-hdmi.ko \
+                             panel-dpi.ko leds-tlc591xx.ko gpio_backlight.ko led_bl.ko pwm_bl.ko
