@@ -9,7 +9,7 @@ allow pvr gpu_device:chr_file rw_file_perms;
 
 # allow graphics driver initialization
 allow pvr self:capability sys_module;
-allow pvr system_file:system module_load;
+allow pvr vendor_file:system module_load;
 
 # allow reading /sys/devices/soc0/machine
 allow pvr sysfs:file { r_file_perms };
