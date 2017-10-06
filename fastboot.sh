@@ -79,7 +79,8 @@ elif [ ${cputype} = "" ] || [ ${cputype} = "GP" ]; then
 fi
 
 # Based on cpu, decide the dtb to flash, default fall back to J6 and LCD 10
-if [ ${cpu} = "J6ECO" ]; then
+
+if [ ${cpu} = "DRA722" ]; then
 	if [ ${boardrev} = "C" ]; then
 		environment="${PRODUCT_OUT}dra72-evm-revc-lcd-osd101t2045.dtb"
 	elif [ ${boardrev} = "A" ]; then
@@ -87,12 +88,20 @@ if [ ${cpu} = "J6ECO" ]; then
 	else
 		environment="${PRODUCT_OUT}dra72-evm-lcd-lg.dtb"
 	fi
-else
+elif [ ${cpu} = "DRA752" ]; then
 	if [ ${boardrev} = "H" ]; then
 		environment="${PRODUCT_OUT}dra7-evm-lcd-osd.dtb"
 	else
 		environment="${PRODUCT_OUT}dra7-evm-lcd-lg.dtb"
 	fi
+elif [ ${cpu} = "DRA762" ]; then
+        if [ ${boardrev} = "A" ]; then
+                environment="${PRODUCT_OUT}dra76-evm.dtb"
+	fi
+else
+	echo "CPU not detected, no matching dtb file found"
+	echo "flashing default dtb, Review and Reflash correct dtb"
+		environment="${PRODUCT_OUT}dra7-evm-lcd-osd.dtb"
 fi
 
 # Create the filename
