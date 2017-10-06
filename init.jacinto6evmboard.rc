@@ -46,7 +46,7 @@ on fs
 
 on late-init
     # Load modules
-    exec u:r:modprobe:s0 -- /system/bin/modprobe -a -d \
+    exec u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -a -d \
          /vendor/lib/modules wl18xx.ko wlcore.ko wlcore_sdio.ko \
                              scsi_mod.ko usb-storage.ko sd_mod.ko \
                              dra7-evm-encoder-tpd12s015.ko encoder-sii9022.ko encoder-tc358768.ko encoder-tpd12s015.ko \
