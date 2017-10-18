@@ -99,7 +99,6 @@ BOARD_VENDOR_KERNEL_MODULES := \
 	$(KERNELDIR)/drivers/usb/storage/usb-storage.ko \
 	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/connector-hdmi.ko \
 	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/dra7-evm-encoder-tpd12s015.ko \
-	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/encoder-sii9022.ko \
 	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/encoder-tc358768.ko \
 	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/encoder-tpd12s015.ko \
 	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/panel-dpi.ko \
@@ -113,9 +112,7 @@ BOARD_VENDOR_KERNEL_MODULES := \
 	$(KERNELDIR)/drivers/input/touchscreen/goodix.ko \
 	$(KERNELDIR)/drivers/input/touchscreen/atmel_mxt_ts.ko \
 	$(KERNELDIR)/drivers/input/touchscreen/ldc3001_ts.ko \
-	$(KERNELDIR)/drivers/input/touchscreen/pixcir_i2c_ts.ko \
 	$(KERNELDIR)/sound/soc/codecs/snd-soc-tlv320aic3x.ko \
-	$(KERNELDIR)/drivers/gpio/gpio-mcp23s08.ko \
 	$(KERNELDIR)/drivers/gpio/gpio-pca953x.ko \
 	$(KERNELDIR)/drivers/media/i2c/ov1063x.ko \
 	$(KERNELDIR)/drivers/media/i2c/ov490.ko \
@@ -127,7 +124,6 @@ BOARD_RECOVERY_KERNEL_MODULES := \
 	$(KERNELDIR)/drivers/usb/storage/usb-storage.ko \
 	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/connector-hdmi.ko \
 	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/dra7-evm-encoder-tpd12s015.ko \
-	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/encoder-sii9022.ko \
 	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/encoder-tc358768.ko \
 	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/encoder-tpd12s015.ko \
 	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/panel-dpi.ko \
