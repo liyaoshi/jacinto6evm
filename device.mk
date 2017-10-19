@@ -120,6 +120,9 @@ PRODUCT_CHARACTERISTICS := tablet,nosdcard
 DEVICE_PACKAGE_OVERLAYS := \
 	device/ti/jacinto6evm/overlay
 
+PRODUCT_ENFORCE_RRO_TARGETS := \
+	framework-res
+
 PRODUCT_PACKAGES += \
 	com.android.future.usb.accessory
 
