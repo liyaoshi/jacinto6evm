@@ -4,6 +4,7 @@
     <attachedDevices>
         <item>Speaker</item>
         <item>Built-In Mic</item>
+        <item>Line In</item>
     </attachedDevices>
 
     <defaultOutputDevice>Speaker</defaultOutputDevice>
@@ -19,7 +20,11 @@
                     channelMasks="AUDIO_CHANNEL_IN_MONO,AUDIO_CHANNEL_IN_STEREO"/>
         </mixPort>
     </mixPorts>
-
+        <mixPort name="line input" role="sink">
+            <profile name="" format="AUDIO_FORMAT_PCM_16_BIT"
+                    samplingRates="8000,11025,12000,16000,22050,24000,32000,44100,48000"
+                    channelMasks="AUDIO_CHANNEL_IN_MONO,AUDIO_CHANNEL_IN_STEREO"/>
+        </mixPort>
     <devicePorts>
         <devicePort tagName="Speaker" type="AUDIO_DEVICE_OUT_SPEAKER" role="sink">
         </devicePort>
@@ -30,18 +35,17 @@
 
         <devicePort tagName="Built-In Mic" type="AUDIO_DEVICE_IN_BUILTIN_MIC" role="source">
         </devicePort>
+        <devicePort tagName="Line In" type="AUDIO_DEVICE_IN_LINE" role="source">
+        </devicePort>
     </devicePorts>
 
     <routes>
-        <route type="mux" sink="Speaker"
-               sources="primary output"/>
-        <route type="mux" sink="Wired Headset"
-               sources="primary output"/>
-        <route type="mux" sink="Wired Headphones"
-               sources="primary output"/>
+        <route type="mux" sink="Speaker" sources="primary output"/>
+        <route type="mux" sink="Wired Headset" sources="primary output"/>
+        <route type="mux" sink="Wired Headphones" sources="primary output"/>
 
-        <route type="mix" sink="primary input"
-               sources="Built-In Mic"/>
+        <route type="mix" sink="primary input" sources="Built-In Mic"/>
+        <route type="mix" sink="line input" sources="Line In"/>
   </routes>
 </module>
 

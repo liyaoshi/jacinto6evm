@@ -96,6 +96,7 @@ PRODUCT_COPY_FILES += \
 else
 PRODUCT_COPY_FILES += \
 	device/ti/jacinto6evm/audio/primary/mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_paths.xml \
+	device/ti/jacinto6evm/audio/primary/jamr3_mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/jamr3_mixer_paths.xml \
 	device/ti/jacinto6evm/audio/primary/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/primary_audio_policy_configuration.xml \
 	device/ti/jacinto6evm/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml
 endif
@@ -161,10 +162,6 @@ PRODUCT_PACKAGES += audio.hdmi.jacinto6
 PRODUCT_PACKAGES += audio.a2dp.default
 # Remote submix
 PRODUCT_PACKAGES += audio.r_submix.default
-# JAMR3 Audio HAL module
-ifneq ($(APPE_AUDIO),true)
-PRODUCT_PACKAGES += audio.jamr3.jacinto6
-endif
 
 PRODUCT_PACKAGES += \
 	tinymix \

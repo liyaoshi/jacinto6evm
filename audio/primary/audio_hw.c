@@ -94,6 +94,7 @@ struct j6_audio_device {
     struct j6_stream_out *out;
     struct j6_voice voice;
     struct audio_route *route;
+    struct audio_route *jamr_route;
     audio_devices_t in_device;
     audio_devices_t out_device;
     pthread_mutex_t lock;
@@ -102,6 +103,8 @@ struct j6_audio_device {
     unsigned int out_port;
     unsigned int bt_card;
     unsigned int bt_port;
+    unsigned int jamr_card;
+    unsigned int jamr_port;
     bool mic_mute;
     bool in_call;
     audio_mode_t mode;
@@ -120,6 +123,8 @@ struct j6_stream_in {
     size_t hw_frame_size;
     unsigned int requested_rate;
     unsigned int requested_channels;
+    unsigned int card;
+    unsigned int port;
     int read_status;
     pthread_mutex_t lock;
     bool standby;
@@ -147,10 +152,15 @@ static const char *supported_bt_cards[] = {
     "DRA7xxWiLink",
 };
 
+static const char *supported_jamr_cards[] = {
+    "DRA7xx-JAMR3",
+};
+
 #define MAX_CARD_COUNT                  10
 
 #define SUPPORTED_IN_DEVICES           (AUDIO_DEVICE_IN_BUILTIN_MIC | \
                                         AUDIO_DEVICE_IN_WIRED_HEADSET | \
+                                        AUDIO_DEVICE_IN_LINE | \
                                         AUDIO_DEVICE_IN_DEFAULT)
 #define SUPPORTED_OUT_DEVICES          (AUDIO_DEVICE_OUT_SPEAKER | \
                                         AUDIO_DEVICE_OUT_WIRED_HEADSET | \
@@ -173,6 +183,7 @@ static const char *supported_bt_cards[] = {
 #define BT_BUFFER_SIZE                  (BT_PERIOD_SIZE * BT_PERIOD_COUNT)
 
 #define MIXER_XML_PATH                  "/vendor/etc/mixer_paths.xml"
+#define JAMR_MIXER_XML_PATH             "/vendor/etc/jamr3_mixer_paths.xml"
 
 struct pcm_config pcm_config_capture = {
     .channels        = 2,
@@ -1295,8 +1306,8 @@ static ssize_t in_read(struct audio_stream_in *stream, void* buffer,
     if (in->standby) {
         select_input_device(adev);
 
-        ALOGI("in_read() open card %u port %u", adev->card, adev->in_port);
-        in->pcm = pcm_open(adev->card, adev->in_port,
+        ALOGI("in_read() open card %u port %u", in->card, in->port);
+        in->pcm = pcm_open(in->card, in->port,
                            PCM_IN | PCM_MONOTONIC,
                            &in->config);
         if (!pcm_is_ready(in->pcm)) {
@@ -1624,6 +1635,8 @@ static int adev_open_input_stream(struct audio_hw_device *dev,
     in->remix = NULL;
     in->resampler = NULL;
     in->buffer = NULL;
+    in->card = (devices == AUDIO_DEVICE_IN_LINE) ? adev->jamr_card : adev->card;
+    in->port = 0;
     adev->in = in;
 
     /* in-place stereo-to-mono remix since capture stream is stereo */
@@ -1721,6 +1734,7 @@ static int adev_close(hw_device_t *device)
     ALOGI("adev_close()");
 
     audio_route_free(adev->route);
+    audio_route_free(adev->jamr_route);
     free(device);
 
     return 0;
@@ -1778,6 +1792,11 @@ static int adev_open(const hw_module_t* module, const char* name,
     adev->bt_port = 0;
     ALOGI("Bluetooth SCO card is hw:%d\n", adev->bt_card);
 
+    adev->jamr_card = find_card_index(supported_jamr_cards,
+                                      ARRAY_SIZE(supported_jamr_cards));
+    adev->jamr_port = 0;
+    ALOGI("JAMR card is hw:%d\n", adev->jamr_card);
+
     adev->mic_mute = false;
     adev->in_call = false;
     adev->mode = AUDIO_MODE_NORMAL;
@@ -1785,13 +1804,24 @@ static int adev_open(const hw_module_t* module, const char* name,
     adev->route = audio_route_init(adev->card, MIXER_XML_PATH);
     if (!adev->route) {
         ALOGE("Unable to initialize audio routes");
-        free(adev);
-        return -EINVAL;
+        goto err1;
+    }
+
+    adev->jamr_route = audio_route_init(adev->jamr_card, JAMR_MIXER_XML_PATH);
+    if (!adev->jamr_route) {
+        ALOGE("Unable to initialize JAMR audio routes");
+        goto err2;
     }
 
     *device = &adev->device.common;
 
     return 0;
+
+ err2:
+    audio_route_free(adev->route);
+ err1:
+    free(adev);
+    return -ENODEV;
 }
 
 static struct hw_module_methods_t hal_module_methods = {
