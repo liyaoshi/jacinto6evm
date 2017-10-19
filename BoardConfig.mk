@@ -83,6 +83,8 @@ BOARD_SEPOLICY_DIRS += \
 	device/ti/jacinto6evm/sepolicy \
 	packages/services/Car/car_product/sepolicy
 
+BOARD_PROPERTY_OVERRIDES_SPLIT_ENABLED := true
+
 # lidbrm driver
 BOARD_GPU_DRIVERS := omapdrm
 

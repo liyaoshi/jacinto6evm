@@ -106,7 +106,8 @@ PRODUCT_COPY_FILES += \
 	device/ti/jacinto6evm/init.jacinto6evmboard.cpuset.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.jacinto6evmboard.cpuset.sh
 
 PRODUCT_PROPERTY_OVERRIDES := \
-	hwui.render_dirty_regions=false
+	hwui.render_dirty_regions=false \
+	wifi.interface=wlan0
 
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
 	persist.sys.usb.config=mtp
