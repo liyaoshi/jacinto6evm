@@ -65,7 +65,6 @@ PRODUCT_COPY_FILES := \
 	frameworks/native/data/etc/android.hardware.ethernet.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.ethernet.xml \
 	frameworks/native/data/etc/android.software.freeform_window_management.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.freeform_window_management.xml \
 	device/ti/jacinto6evm/EP05120M09.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/EP05120M09.idc \
-	device/ti/jacinto6evm/Atmel_maXTouch_Touchscreen.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/Atmel_maXTouch_Touchscreen.idc \
 	device/ti/jacinto6evm/LDC_3001_TouchScreen_Controller.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/LDC_3001_TouchScreen_Controller.idc \
 
 # init.rc for recovery image

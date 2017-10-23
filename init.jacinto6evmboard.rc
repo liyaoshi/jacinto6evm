@@ -39,7 +39,7 @@ on late-init
                              ti-fpd3-serdes.ko \
                              connector-hdmi.ko \
                              panel-dpi.ko leds-tlc591xx.ko gpio_backlight.ko led_bl.ko pwm_bl.ko \
-                             edt-ft5x06.ko goodix.ko input-polldev.ko atmel_mxt_ts.ko ldc3001_ts.ko \
+                             edt-ft5x06.ko goodix.ko input-polldev.ko ldc3001_ts.ko \
                              ov1063x.ko ov490.ko tvp5158.ko \
                              gpio-pca953x.ko \
                              snd-soc-tlv320aic3x.ko
