@@ -192,7 +192,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	com.android.car.radio.demo=true \
 	com.android.car.radio.demo.dual=true
 
-#$(call inherit-product, frameworks/native/build/tablet-7in-hdpi-1024-dalvik-heap.mk)
+$(call inherit-product, frameworks/native/build/tablet-7in-hdpi-1024-dalvik-heap.mk)
 $(call inherit-product-if-exists, hardware/ti/dra7xx/jacinto6.mk)
 #$(call inherit-product-if-exists, hardware/ti/wpan/ti-wpan-products.mk)
 $(call inherit-product-if-exists, device/ti/proprietary-open/jacinto6/ti-jacinto6-vendor.mk)
