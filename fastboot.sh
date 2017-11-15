@@ -95,13 +95,11 @@ elif [ ${cpu} = "DRA752" ]; then
 		environment="${PRODUCT_OUT}dra7-evm-lcd-lg.dtb"
 	fi
 elif [ ${cpu} = "DRA762" ]; then
-        if [ ${boardrev} = "A" ]; then
-                environment="${PRODUCT_OUT}dra76-evm.dtb"
-	fi
+	environment="${PRODUCT_OUT}dra76-evm.dtb"
 else
 	echo "CPU not detected, no matching dtb file found"
 	echo "flashing default dtb, Review and Reflash correct dtb"
-		environment="${PRODUCT_OUT}dra7-evm-lcd-osd.dtb"
+	environment="${PRODUCT_OUT}dra7-evm-lcd-osd.dtb"
 fi
 
 # Create the filename
