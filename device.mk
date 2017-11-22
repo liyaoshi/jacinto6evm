@@ -27,6 +27,7 @@ USE_XML_AUDIO_POLICY_CONF := 1
 
 PRODUCT_PACKAGES += \
    vehicle.default \
+   android.hardware.automotive.vehicle@2.0-service \
    android.hardware.wifi@1.0-service \
    android.hardware.graphics.allocator@2.0-impl \
    android.hardware.graphics.allocator@2.0-service \
@@ -120,8 +121,8 @@ PRODUCT_CHARACTERISTICS := tablet,nosdcard
 DEVICE_PACKAGE_OVERLAYS := \
 	device/ti/jacinto6evm/overlay
 
-PRODUCT_ENFORCE_RRO_TARGETS := \
-	framework-res
+#PRODUCT_ENFORCE_RRO_TARGETS := \
+#	framework-res
 
 PRODUCT_PACKAGES += \
 	com.android.future.usb.accessory
