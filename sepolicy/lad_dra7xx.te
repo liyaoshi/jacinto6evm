@@ -14,7 +14,11 @@ allow lad_dra7xx self:socket { create_socket_perms_no_ioctl };
 # Allow access to hwspinlock and uio device
 allow lad_dra7xx hwspinlock_dev:chr_file { rw_file_perms };
 allow lad_dra7xx uio_dev:chr_file { rw_file_perms };
-allow lad_dra7xx sysfs:file { r_file_perms };
+
+# Allow access to uio's sysfs
+allow lad_dra7xx sysfs_uio:dir { r_dir_perms };
+allow lad_dra7xx sysfs_uio:file { r_file_perms };
+allow lad_dra7xx sysfs_uio:lnk_file { r_file_perms };
 
 # Allow signull operation from known client processes
 allow lad_dra7xx mediaserver:process signull;

@@ -18,3 +18,7 @@ allow vis hwspinlock_dev:chr_file { rw_file_perms };
 
 # Allow access to I2C for audio codec configuration
 allow vis i2c_device:chr_file { rw_file_perms };
+
+# Allow access to sysfs
+allow vis sysfs_socinfo:file { r_file_perms };
+allow vis sysfs_socinfo:dir { r_dir_perms };
