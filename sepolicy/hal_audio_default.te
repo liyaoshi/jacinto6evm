@@ -1,0 +1,12 @@
+# APPE HAL
+
+# Allow access to the IPC LAD, hwspinlock and uio device
+allow hal_audio_default lad_data_file:fifo_file { rw_file_perms };
+allow hal_audio_default hwspinlock_dev:chr_file { rw_file_perms };
+allow hal_audio_default cmem_dev:chr_file { rw_file_perms };
+
+# Allow access to VIS-related socket operations
+allow hal_audio_default vis:unix_stream_socket connectto;
+allow hal_audio_default self:socket create_socket_perms_no_ioctl;
+
+set_prop(hal_audio_default, ctl_default_prop)
