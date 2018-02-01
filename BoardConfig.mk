@@ -120,7 +120,9 @@ BOARD_VENDOR_KERNEL_MODULES := \
 	$(KERNELDIR)/drivers/gpio/gpio-pca953x.ko \
 	$(KERNELDIR)/drivers/media/i2c/ov1063x.ko \
 	$(KERNELDIR)/drivers/media/i2c/ov490.ko \
-	$(KERNELDIR)/drivers/media/i2c/tvp5158.ko
+	$(KERNELDIR)/drivers/media/i2c/tvp5158.ko \
+	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/encoder-tfp410.ko \
+	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/connector-dvi.ko
 
 BOARD_RECOVERY_KERNEL_MODULES := \
 	$(KERNELDIR)/drivers/scsi/scsi_mod.ko \
@@ -136,3 +138,5 @@ BOARD_RECOVERY_KERNEL_MODULES := \
 	$(KERNELDIR)/drivers/video/backlight/gpio_backlight.ko \
 	$(KERNELDIR)/drivers/video/backlight/led_bl.ko \
 	$(KERNELDIR)/drivers/video/backlight/pwm_bl.ko \
+	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/encoder-tfp410.ko \
+	$(KERNELDIR)/drivers/gpu/drm/omapdrm/displays/connector-dvi.ko
