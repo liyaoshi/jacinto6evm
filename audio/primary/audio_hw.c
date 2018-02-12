@@ -95,8 +95,6 @@ struct j6_audio_device {
     struct j6_voice voice;
     struct audio_route *route;
     struct audio_route *jamr_route;
-    audio_devices_t in_device;
-    audio_devices_t out_device;
     pthread_mutex_t lock;
     unsigned int card;
     unsigned int in_port;
@@ -125,6 +123,7 @@ struct j6_stream_in {
     unsigned int requested_channels;
     unsigned int card;
     unsigned int port;
+    audio_devices_t device;
     int read_status;
     pthread_mutex_t lock;
     bool standby;
@@ -137,6 +136,9 @@ struct j6_stream_out {
     struct pcm *pcm;
     struct timespec last;
     pthread_mutex_t lock;
+    unsigned int card;
+    unsigned int port;
+    audio_devices_t device;
     bool standby;
     int64_t written; /* total frames written, not cleared when entering standby */
 };
@@ -257,20 +259,6 @@ static int find_card_index(const char *supported_cards[], int num_supported)
 }
 
 static void do_out_standby(struct j6_stream_out *out);
-
-/* must be called with device lock held */
-static void select_input_device(struct j6_audio_device *adev)
-{
-    if (adev->in_device & ~SUPPORTED_IN_DEVICES)
-        ALOGW("select_input_device() device not supported, will use default device");
-}
-
-/* must be called with device lock held */
-static void select_output_device(struct j6_audio_device *adev)
-{
-    if (adev->out_device & ~SUPPORTED_OUT_DEVICES)
-        ALOGW("select_output_device() device(s) not supported, will use default devices");
-}
 
 static size_t get_input_buffer_size(uint32_t sample_rate, int format, int channel_count)
 {
@@ -792,7 +780,7 @@ static void do_out_standby(struct j6_stream_out *out)
 
     if (!out->standby) {
         if (adev->mode != AUDIO_MODE_IN_CALL) {
-            ALOGI("do_out_standby() close card %u port %u", adev->card, adev->out_port);
+            ALOGI("do_out_standby() close card %u port %u", out->card, out->port);
             pcm_close(out->pcm);
             out->pcm = NULL;
         } else {
@@ -844,12 +832,13 @@ static int out_set_parameters(struct audio_stream *stream, const char *kvpairs)
         pthread_mutex_lock(&adev->lock);
         pthread_mutex_lock(&out->lock);
         if (val != 0) {
-            if ((adev->out_device & AUDIO_DEVICE_OUT_ALL) != val)
+            if ((out->device & AUDIO_DEVICE_OUT_ALL) != val) {
+                ALOGI("out_set_parameters() forcing standby");
                 do_out_standby(out);
+            }
 
             /* set the active output device */
-            adev->out_device = val;
-            select_output_device(adev);
+            out->device = val;
         }
         pthread_mutex_unlock(&out->lock);
         pthread_mutex_unlock(&adev->lock);
@@ -909,10 +898,8 @@ static ssize_t out_write(struct audio_stream_out *stream, const void* buffer,
 
     if (out->standby) {
         if (!adev->in_call) {
-            select_output_device(adev);
-
-            ALOGI("out_write() open card %u port %u", adev->card, adev->out_port);
-            out->pcm = pcm_open(adev->card, adev->out_port,
+            ALOGI("out_write() open card %u port %u", out->card, out->port);
+            out->pcm = pcm_open(out->card, out->port,
                                 PCM_OUT | PCM_MONOTONIC,
                                 &out->config);
             if (!pcm_is_ready(out->pcm)) {
@@ -1096,7 +1083,7 @@ static void do_in_standby(struct j6_stream_in *in)
     struct j6_audio_device *adev = in->dev;
 
     if (!in->standby) {
-        ALOGI("do_in_standby() close card %u port %u", adev->card, adev->out_port);
+        ALOGI("do_in_standby() close card %u port %u", in->card, in->port);
         pcm_close(in->pcm);
         in->pcm = NULL;
         in->standby = true;
@@ -1147,12 +1134,11 @@ static int in_set_parameters(struct audio_stream *stream, const char *kvpairs)
         pthread_mutex_lock(&adev->lock);
         pthread_mutex_lock(&in->lock);
         if (val != 0) {
-            if ((adev->in_device & AUDIO_DEVICE_IN_ALL) != val)
+            if ((in->device & AUDIO_DEVICE_IN_ALL) != val)
                 do_in_standby(in);
 
             /* set the active input device */
-            adev->in_device = val;
-            select_input_device(adev);
+            in->device = val;
         }
         pthread_mutex_unlock(&in->lock);
         pthread_mutex_unlock(&adev->lock);
@@ -1304,8 +1290,6 @@ static ssize_t in_read(struct audio_stream_in *stream, void* buffer,
     pthread_mutex_lock(&in->lock);
 
     if (in->standby) {
-        select_input_device(adev);
-
         ALOGI("in_read() open card %u port %u", in->card, in->port);
         in->pcm = pcm_open(in->card, in->port,
                            PCM_IN | PCM_MONOTONIC,
@@ -1422,6 +1406,9 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
     out->standby = true;
     out->config = pcm_config_playback;
     out->written = 0;
+    out->card = adev->card;
+    out->port = 0;
+    out->device = devices;
     adev->out = out;
 
     config->format = out_get_format(&out->stream.common);
@@ -1637,6 +1624,7 @@ static int adev_open_input_stream(struct audio_hw_device *dev,
     in->buffer = NULL;
     in->card = (devices == AUDIO_DEVICE_IN_LINE) ? adev->jamr_card : adev->card;
     in->port = 0;
+    in->device = devices;
     adev->in = in;
 
     /* in-place stereo-to-mono remix since capture stream is stereo */
@@ -1779,8 +1767,6 @@ static int adev_open(const hw_module_t* module, const char* name,
     adev->device.close_input_stream = adev_close_input_stream;
     adev->device.dump = adev_dump;
 
-    adev->in_device = AUDIO_DEVICE_IN_BUILTIN_MIC;
-    adev->out_device = AUDIO_DEVICE_OUT_SPEAKER;
     adev->card = find_card_index(supported_media_cards,
                                  ARRAY_SIZE(supported_media_cards));
     adev->in_port = 0;
