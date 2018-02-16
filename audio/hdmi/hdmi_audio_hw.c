@@ -51,6 +51,9 @@
 
 #define UNUSED(x) (void)(x)
 
+/* yet another definition of ARRAY_SIZE macro) */
+#define ARRAY_SIZE(x) (sizeof(x)/sizeof((x)[0]))
+
 #define MAX_CARD_COUNT 10
 #define HDMI_PCM_DEV 0
 #define HDMI_SAMPLING_RATE 44100
@@ -77,6 +80,11 @@ typedef struct _hdmi_out {
     int up;
     void *buffcpy;
 } hdmi_out_t;
+
+static const char *supported_hdmi_cards[] = {
+    "HDMI",
+    "hdmi",
+};
 
 #define S16_SIZE sizeof(int16_t)
 
@@ -317,7 +325,7 @@ int hdmi_out_set_volume(struct audio_stream_out *stream, float left, float right
     return -ENOSYS;
 }
 
-static int hdmi_out_find_card(void)
+static int find_card_index(const char *supported_cards[], int num_supported)
 {
     struct mixer *mixer;
     const char *name;
@@ -333,9 +341,12 @@ static int hdmi_out_find_card(void)
 
         name = mixer_get_name(mixer);
 
-        if (strstr(name, "HDMI") || strstr(name, "hdmi")) {
-            TRACEM("HDMI card '%s' found at %d", name, card);
-            found = 1;
+        for (i = 0; i < num_supported; ++i) {
+            if (supported_cards[i] && strstr(name, supported_cards[i])) {
+                TRACEM("Supported card '%s' found at %d", name, card);
+                found = 1;
+                break;
+            }
         }
 
         mixer_close(mixer);
@@ -350,7 +361,8 @@ static int hdmi_out_find_card(void)
 
 static int hdmi_out_open_pcm(hdmi_out_t *out)
 {
-    int card = hdmi_out_find_card();
+    int card = find_card_index(supported_hdmi_cards,
+                               ARRAY_SIZE(supported_hdmi_cards));
     int dev = HDMI_PCM_DEV;
     int ret;
 
