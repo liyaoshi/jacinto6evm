@@ -14,6 +14,8 @@
 
 LOCAL_PATH := $(call my-dir)
 
+ifeq ($(PRIMARY_AUDIO),cpuboard)
+
 ifeq ($(findstring jacinto6, $(TARGET_BOARD_PLATFORM)),jacinto6)
 
 include $(CLEAR_VARS)
@@ -39,5 +41,7 @@ LOCAL_SHARED_LIBRARIES := \
 LOCAL_MODULE_TAGS := optional
 
 include $(BUILD_SHARED_LIBRARY)
+
+endif
 
 endif

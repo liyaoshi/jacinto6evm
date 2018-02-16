@@ -14,8 +14,8 @@
 # limitations under the License.
 #
 
-# Audio Post Processing Engine (APPE)
-APPE_AUDIO := false
+# Primary Audio HAL: 'cpuboard', 'hdmi', 'appe'
+PRIMARY_AUDIO := cpuboard
 
 ifeq ($(TARGET_PREBUILT_KERNEL),)
 LOCAL_KERNEL := $(KERNELDIR)/arch/arm/boot/zImage
@@ -88,7 +88,7 @@ PRODUCT_COPY_FILES += \
 	frameworks/av/services/audiopolicy/config/default_volume_tables.xml:$(TARGET_COPY_OUT_VENDOR)/etc/default_volume_tables.xml \
 	frameworks/av/services/audiopolicy/config/audio_policy_volumes.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_volumes.xml
 
-ifeq ($(APPE_AUDIO),true)
+ifeq ($(PRIMARY_AUDIO),appe)
 PRODUCT_COPY_FILES += \
 	hardware/ti/radio/vis_sdk/packages/android/hal/mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_paths.xml \
 	hardware/ti/radio/vis_sdk/packages/android/hal/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/primary_audio_policy_configuration.xml \
