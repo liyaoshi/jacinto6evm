@@ -1159,6 +1159,8 @@ static int hdmi_adev_open_output_stream(audio_hw_device_t *dev,
     hdmi_out_t *out = 0;
     struct pcm_config *pcm_config = 0;
     struct audio_config *a_config = 0;
+    hdmi_audio_caps_t caps;
+    unsigned int sa;
 
     TRACE();
     UNUSED(handle);
@@ -1203,7 +1205,8 @@ static int hdmi_adev_open_output_stream(audio_hw_device_t *dev,
 
     switch (a_config->format) {
     case AUDIO_FORMAT_DEFAULT:
-        a_config->format = AUDIO_FORMAT_PCM_16_BIT;
+        config->format = AUDIO_FORMAT_PCM_16_BIT;
+        a_config->format = config->format;
         /* fall through */
     case AUDIO_FORMAT_PCM_16_BIT:
         pcm_config->format = PCM_FORMAT_S16_LE;
@@ -1228,10 +1231,27 @@ static int hdmi_adev_open_output_stream(audio_hw_device_t *dev,
         pcm_config->channels = 8;
         break;
     default:
-        ALOGE("HDMI setting a default channel_mask %x -> 8", config->channel_mask);
-        config->channel_mask = AUDIO_CHANNEL_OUT_7POINT1;
-        a_config->channel_mask = AUDIO_CHANNEL_OUT_7POINT1;
-        pcm_config->channels = 8;
+        if (!hdmi_query_audio_caps(&caps)) {
+            sa = caps.speaker_alloc;
+            if (SUPPORTS_ARR(sa, MASK_CEA_7POINT1))
+                config->channel_mask = AUDIO_CHANNEL_OUT_7POINT1;
+            else if (SUPPORTS_ARR(sa, MASK_CEA_5POINT1))
+                config->channel_mask = AUDIO_CHANNEL_OUT_5POINT1;
+            else if (SUPPORTS_ARR(sa, MASK_CEA_SURROUND))
+                config->channel_mask = AUDIO_CHANNEL_OUT_SURROUND;
+            else if (SUPPORTS_ARR(sa, MASK_CEA_QUAD))
+                config->channel_mask = AUDIO_CHANNEL_OUT_QUAD;
+            else
+                config->channel_mask = AUDIO_CHANNEL_OUT_STEREO;
+        } else {
+            ALOGE("Unable to get HDMI audio caps, set a default channel_mask %x -> 8",
+                  config->channel_mask);
+            config->channel_mask = AUDIO_CHANNEL_OUT_7POINT1;
+        }
+
+        a_config->channel_mask = config->channel_mask;
+        pcm_config->channels = popcount(config->channel_mask);
+        ALOGI("Dynamic channel count from EDID set to %d", pcm_config->channels);
     }
 
     //Allocating buffer for at most 8 channels

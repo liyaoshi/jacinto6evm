@@ -93,7 +93,12 @@ PRODUCT_COPY_FILES += \
 	hardware/ti/radio/vis_sdk/packages/android/hal/mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_paths.xml \
 	hardware/ti/radio/vis_sdk/packages/android/hal/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/primary_audio_policy_configuration.xml \
 	hardware/ti/radio/vis_sdk/packages/android/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml
-
+else ifeq ($(PRIMARY_AUDIO),hdmi)
+PRODUCT_COPY_FILES += \
+	device/ti/jacinto6evm/audio/primary/mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_paths.xml \
+	device/ti/jacinto6evm/audio/primary/jamr3_mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/jamr3_mixer_paths.xml \
+	device/ti/jacinto6evm/audio/hdmi/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/primary_audio_policy_configuration.xml \
+	device/ti/jacinto6evm/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml
 else
 PRODUCT_COPY_FILES += \
 	device/ti/jacinto6evm/audio/primary/mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_paths.xml \
