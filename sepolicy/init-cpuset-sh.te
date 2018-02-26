@@ -1,8 +1,8 @@
 type init-cpuset-sh, domain;
-type init-cpuset-sh_exec, exec_type, file_type;
+type init-cpuset-sh_exec, exec_type, vendor_file_type, file_type;
 
 init_daemon_domain(init-cpuset-sh)
 
-allow init-cpuset-sh system_file:file execute_no_trans;
-allow init-cpuset-sh shell_exec:file { read getattr };
-allow init-cpuset-sh toolbox_exec:file rx_file_perms;
+allow init-cpuset-sh vendor_file:file execute_no_trans;
+allow init-cpuset-sh vendor_toolbox_exec:file rx_file_perms;
+allow init-cpuset-sh vendor_shell_exec:file rx_file_perms;

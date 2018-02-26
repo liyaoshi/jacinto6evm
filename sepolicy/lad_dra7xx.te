@@ -1,5 +1,5 @@
 type lad_dra7xx, domain;
-type lad_dra7xx_exec, exec_type, file_type;
+type lad_dra7xx_exec, exec_type, vendor_file_type, file_type;
 type lad_data_file, file_type, data_file_type;
 
 # Started by init

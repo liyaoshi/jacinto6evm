@@ -1,5 +1,5 @@
 type pvr, domain;
-type pvr_exec, exec_type, file_type;
+type pvr_exec, exec_type, vendor_file_type, file_type;
 
 # Started by init
 init_daemon_domain(pvr)
