@@ -75,6 +75,8 @@ typedef struct _hdmi_device {
     struct audio_route *jamr_route;
     unsigned int card;
     unsigned int jamr_card;
+    bool has_media;
+    bool has_jamr;
     bool mic_mute;
 #endif
 } hdmi_device_t;
@@ -798,12 +800,14 @@ int hdmi_out_set_volume(struct audio_stream_out *stream, float left, float right
     return -ENOSYS;
 }
 
-static int find_card_index(const char *supported_cards[], int num_supported)
+static bool find_card_index(const char *supported_cards[],
+                            int num_supported,
+                            unsigned int *index)
 {
     struct mixer *mixer;
     const char *name;
+    bool found = false;
     int card = 0;
-    int found = 0;
     int i;
 
     do {
@@ -817,7 +821,8 @@ static int find_card_index(const char *supported_cards[], int num_supported)
         for (i = 0; i < num_supported; ++i) {
             if (supported_cards[i] && strstr(name, supported_cards[i])) {
                 TRACEM("Supported card '%s' found at %d", name, card);
-                found = 1;
+                found = true;
+                *index = card;
                 break;
             }
         }
@@ -825,21 +830,25 @@ static int find_card_index(const char *supported_cards[], int num_supported)
         mixer_close(mixer);
     } while (!found && (card++ < MAX_CARD_COUNT));
 
-    /* Use default card number if not found */
-    if (!found)
-        card = 1;
-
-    return card;
+    return found;
 }
 
 static int hdmi_out_open_pcm(hdmi_out_t *out)
 {
-    int card = find_card_index(supported_hdmi_cards,
-                               ARRAY_SIZE(supported_hdmi_cards));
+    bool found;
+    unsigned int card;
     int dev = HDMI_PCM_DEV;
     int ret;
 
     TRACEM("out=%p", out);
+
+    found = find_card_index(supported_hdmi_cards,
+                            ARRAY_SIZE(supported_hdmi_cards),
+                            &card);
+    if (!found) {
+        ALOGE("HDMI card not available");
+        return -ENODEV;
+    }
 
     /* out->up must be 0 (down) */
     if (out->up) {
@@ -987,10 +996,15 @@ static int hdmi_adev_close(struct hw_device_t *device)
 #ifdef PRIMARY_HDMI_AUDIO_HAL
     hdmi_device_t *adev = (hdmi_device_t *)device;
 
-    audio_route_free(adev->route);
-    audio_route_free(adev->jamr_route);
-    adev->route = NULL;
-    adev->jamr_route = NULL;
+    if (adev->has_media) {
+        audio_route_free(adev->route);
+        adev->route = NULL;
+    }
+
+    if (adev->has_jamr) {
+        audio_route_free(adev->jamr_route);
+        adev->jamr_route = NULL;
+    }
 #else
     UNUSED(device);
 #endif
@@ -1303,10 +1317,19 @@ static int hdmi_adev_open_input_stream(audio_hw_device_t *dev,
     int ret;
 
     UNUSED(handle);
-    UNUSED(devices);
     UNUSED(flags);
     UNUSED(address);
     UNUSED(source);
+
+    if ((devices == AUDIO_DEVICE_IN_BUILTIN_MIC) && !adev->has_media) {
+        ALOGE("hdmi_adev_open_input_stream() mic not available");
+        return -ENODEV;
+    }
+
+    if ((devices == AUDIO_DEVICE_IN_LINE) && !adev->has_jamr) {
+        ALOGE("hdmi_adev_open_input_stream() line-in not available");
+        return -ENODEV;
+    }
 
     in = (audio_in_t *)calloc(1, sizeof(audio_in_t));
     if (!in)
@@ -1484,24 +1507,36 @@ static int hdmi_adev_open(const hw_module_t* module,
     *device = &hdmi_adev.device.common;
 
 #ifdef PRIMARY_HDMI_AUDIO_HAL
-    hdmi_adev.card = find_card_index(supported_media_cards,
-                                     ARRAY_SIZE(supported_media_cards));
+    hdmi_adev.has_media = find_card_index(supported_media_cards,
+                                          ARRAY_SIZE(supported_media_cards),
+                                          &hdmi_adev.card);
 
-    hdmi_adev.jamr_card = find_card_index(supported_jamr_cards,
-                                          ARRAY_SIZE(supported_jamr_cards));
+    hdmi_adev.has_jamr = find_card_index(supported_jamr_cards,
+                                         ARRAY_SIZE(supported_jamr_cards),
+                                         &hdmi_adev.jamr_card);
 
-    hdmi_adev.route = audio_route_init(hdmi_adev.card, MIXER_XML_PATH);
-    if (!hdmi_adev.route) {
-        ALOGE("Unable to initialize audio routes");
-        return -ENODEV;
+    if (hdmi_adev.has_media) {
+        hdmi_adev.route = audio_route_init(hdmi_adev.card, MIXER_XML_PATH);
+        if (!hdmi_adev.route) {
+            ALOGE("Unable to initialize audio routes");
+            return -ENODEV;
+        }
+    } else {
+        ALOGW("Media card not detected, microphone won't be available");
     }
 
-    hdmi_adev.jamr_route = audio_route_init(hdmi_adev.jamr_card, JAMR_MIXER_XML_PATH);
-    if (!hdmi_adev.jamr_route) {
-        ALOGE("Unable to initialize JAMR audio routes");
-        audio_route_free(hdmi_adev.route);
-        hdmi_adev.route = NULL;
-        return -ENODEV;
+    if (hdmi_adev.has_jamr) {
+        hdmi_adev.jamr_route = audio_route_init(hdmi_adev.jamr_card, JAMR_MIXER_XML_PATH);
+        if (!hdmi_adev.jamr_route) {
+            ALOGE("Unable to initialize JAMR audio routes");
+            if (hdmi_adev.has_media) {
+                audio_route_free(hdmi_adev.route);
+                hdmi_adev.route = NULL;
+            }
+            return -ENODEV;
+        }
+    } else {
+        ALOGW("JAMR card not detected, line-in won't be available");
     }
 #endif
 
