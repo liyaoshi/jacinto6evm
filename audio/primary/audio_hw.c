@@ -103,6 +103,9 @@ struct j6_audio_device {
     unsigned int bt_port;
     unsigned int jamr_card;
     unsigned int jamr_port;
+    bool has_media;
+    bool has_bt;
+    bool has_jamr;
     bool mic_mute;
     bool in_call;
     audio_mode_t mode;
@@ -224,12 +227,14 @@ struct pcm_config pcm_config_bt_out = {
     .period_count    = BT_PERIOD_COUNT,
 };
 
-static int find_card_index(const char *supported_cards[], int num_supported)
+static bool find_card_index(const char *supported_cards[],
+                            int num_supported,
+                            unsigned int *index)
 {
     struct mixer *mixer;
     const char *name;
+    bool found = false;
     int card = 0;
-    int found = 0;
     int i;
 
     do {
@@ -243,7 +248,8 @@ static int find_card_index(const char *supported_cards[], int num_supported)
         for (i = 0; i < num_supported; ++i) {
             if (supported_cards[i] && !strcmp(name, supported_cards[i])) {
                 ALOGV("Supported card '%s' found at %d", name, card);
-                found = 1;
+                found = true;
+                *index = card;
                 break;
             }
         }
@@ -251,11 +257,7 @@ static int find_card_index(const char *supported_cards[], int num_supported)
         mixer_close(mixer);
     } while (!found && (card++ < MAX_CARD_COUNT));
 
-    /* Use default card number if not found */
-    if (!found)
-        card = 0;
-
-    return card;
+    return found;
 }
 
 static void do_out_standby(struct j6_stream_out *out);
@@ -1515,14 +1517,18 @@ static int adev_set_mode(struct audio_hw_device *dev, audio_mode_t mode)
         goto out;
     }
 
-    if (mode == AUDIO_MODE_IN_CALL) {
-        ret = enter_voice_call(adev);
-        if (ret) {
-            ALOGE("adev_set_mode() failed to initialize voice call %d", ret);
-            goto out;
+    if (adev->has_bt) {
+        if (mode == AUDIO_MODE_IN_CALL) {
+            ret = enter_voice_call(adev);
+            if (ret) {
+                ALOGE("adev_set_mode() failed to initialize voice call %d", ret);
+                goto out;
+            }
+        } else if (adev->mode == AUDIO_MODE_IN_CALL) {
+            leave_voice_call(adev);
         }
-    } else if (adev->mode == AUDIO_MODE_IN_CALL) {
-        leave_voice_call(adev);
+    } else {
+        ALOGW("adev_set_mode() BT SCO not available");
     }
 
     adev->mode = mode;
@@ -1583,10 +1589,14 @@ static int adev_open_input_stream(struct audio_hw_device *dev,
     int ret;
 
     UNUSED(handle);
-    UNUSED(devices);
     UNUSED(flags);
     UNUSED(address);
     UNUSED(source);
+
+    if ((devices == AUDIO_DEVICE_IN_LINE) && !adev->has_jamr) {
+        ALOGE("adev_open_input_stream() line-in not available");
+        return -ENODEV;
+    }
 
     in = (struct j6_stream_in *)calloc(1, sizeof(struct j6_stream_in));
     if (!in)
@@ -1722,7 +1732,11 @@ static int adev_close(hw_device_t *device)
     ALOGI("adev_close()");
 
     audio_route_free(adev->route);
-    audio_route_free(adev->jamr_route);
+
+    if (adev->has_jamr) {
+        audio_route_free(adev->jamr_route);
+    }
+
     free(device);
 
     return 0;
@@ -1767,21 +1781,37 @@ static int adev_open(const hw_module_t* module, const char* name,
     adev->device.close_input_stream = adev_close_input_stream;
     adev->device.dump = adev_dump;
 
-    adev->card = find_card_index(supported_media_cards,
-                                 ARRAY_SIZE(supported_media_cards));
+    adev->has_media = find_card_index(supported_media_cards,
+                                      ARRAY_SIZE(supported_media_cards),
+                                      &adev->card);
+    if (!adev->has_media) {
+        ALOGW("adev_open() media card not detected, use default card index 0");
+        adev->has_media = true;
+        adev->card = 0;
+    }
     adev->in_port = 0;
     adev->out_port = 0;
-    ALOGI("Media card is hw:%d\n", adev->card);
+    ALOGI("adev_open() media card is hw:%d", adev->card);
 
-    adev->bt_card = find_card_index(supported_bt_cards,
-                                    ARRAY_SIZE(supported_bt_cards));
-    adev->bt_port = 0;
-    ALOGI("Bluetooth SCO card is hw:%d\n", adev->bt_card);
+    adev->has_bt = find_card_index(supported_bt_cards,
+                                   ARRAY_SIZE(supported_bt_cards),
+                                   &adev->bt_card);
+    if (adev->has_bt) {
+        ALOGI("adev_open() bluetooth SCO card is hw:%d", adev->bt_card);
+        adev->bt_port = 0;
+    } else {
+        ALOGW("adev_open() Bluetooth SCO card not found");
+    }
 
-    adev->jamr_card = find_card_index(supported_jamr_cards,
-                                      ARRAY_SIZE(supported_jamr_cards));
-    adev->jamr_port = 0;
-    ALOGI("JAMR card is hw:%d\n", adev->jamr_card);
+    adev->has_jamr = find_card_index(supported_jamr_cards,
+                                     ARRAY_SIZE(supported_jamr_cards),
+                                     &adev->jamr_card);
+    if (adev->has_jamr) {
+        ALOGI("adev_open() JAMR card is hw:%d", adev->jamr_card);
+        adev->jamr_port = 0;
+    } else {
+        ALOGW("adev_open() JAMR card not found");
+    }
 
     adev->mic_mute = false;
     adev->in_call = false;
@@ -1789,14 +1819,16 @@ static int adev_open(const hw_module_t* module, const char* name,
 
     adev->route = audio_route_init(adev->card, MIXER_XML_PATH);
     if (!adev->route) {
-        ALOGE("Unable to initialize audio routes");
+        ALOGE("adev_open() unable to initialize audio routes");
         goto err1;
     }
 
-    adev->jamr_route = audio_route_init(adev->jamr_card, JAMR_MIXER_XML_PATH);
-    if (!adev->jamr_route) {
-        ALOGE("Unable to initialize JAMR audio routes");
-        goto err2;
+    if (adev->has_jamr) {
+        adev->jamr_route = audio_route_init(adev->jamr_card, JAMR_MIXER_XML_PATH);
+        if (!adev->jamr_route) {
+            ALOGE("adev_open() unable to initialize JAMR audio routes");
+            goto err2;
+        }
     }
 
     *device = &adev->device.common;
