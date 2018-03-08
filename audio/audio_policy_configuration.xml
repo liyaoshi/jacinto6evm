@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <audioPolicyConfiguration version="1.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <!-- Global configuration Declaration -->
+    <globalConfiguration speaker_drc_enabled="false"/>
+
     <modules>
         <!-- Primary Audio HAL -->
         <xi:include href="primary_audio_policy_configuration.xml"/>
@@ -12,7 +15,6 @@
 
         <!-- Remote Submix Audio HAL -->
         <xi:include href="r_submix_audio_policy_configuration.xml"/>
-
     </modules>
 
     <!-- Volume section -->

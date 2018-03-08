@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Primary Audio HAL Module Audio Policy Configuration include file -->
-<module name="primary" description="Primary Audio HAL" halVersion="2.0">
+<module name="primary" halVersion="2.0">
     <attachedDevices>
         <item>Speaker</item>
         <item>Built-In Mic</item>
@@ -40,6 +40,6 @@
         <route type="mux" sink="Speaker" sources="primary output"/>
         <route type="mix" sink="primary input" sources="Built-In Mic"/>
         <route type="mix" sink="line input" sources="Line In"/>
-  </routes>
+    </routes>
 </module>
 
