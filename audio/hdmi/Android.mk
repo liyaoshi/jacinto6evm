@@ -42,6 +42,8 @@ LOCAL_C_INCLUDES += \
 	system/media/audio_effects/include \
 	frameworks/native/include/media/openmax
 
+LOCAL_HEADER_LIBRARIES += libhardware_headers
+
 LOCAL_SHARED_LIBRARIES += \
 	liblog \
 	libcutils \
