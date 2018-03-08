@@ -945,7 +945,7 @@ int hdmi_out_get_render_position(const struct audio_stream_out *stream,
     UNUSED(stream);
     UNUSED(dsp_frames);
 
-    return -EINVAL;
+    return -ENOSYS;
 }
 
 int hdmi_out_get_next_write_timestamp(const struct audio_stream_out *stream,
@@ -955,7 +955,7 @@ int hdmi_out_get_next_write_timestamp(const struct audio_stream_out *stream,
     UNUSED(stream);
     UNUSED(timestamp);
 
-    return -EINVAL;
+    return -ENOSYS;
 }
 
 
@@ -1038,7 +1038,7 @@ static int hdmi_adev_set_voice_volume(audio_hw_device_t *dev, float volume)
     UNUSED(dev);
     UNUSED(volume);
 
-    return -ENOSYS;
+    return 0;
 }
 
 static int hdmi_adev_set_master_volume(audio_hw_device_t *dev, float volume)

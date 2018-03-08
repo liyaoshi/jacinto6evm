@@ -955,7 +955,7 @@ static int out_get_render_position(const struct audio_stream_out *stream,
     UNUSED(stream);
     UNUSED(dsp_frames);
 
-    return -EINVAL;
+    return -ENOSYS;
 }
 
 static int out_add_audio_effect(const struct audio_stream *stream, effect_handle_t effect)
@@ -980,7 +980,7 @@ static int out_get_next_write_timestamp(const struct audio_stream_out *stream,
     UNUSED(stream);
     UNUSED(timestamp);
 
-    return -EINVAL;
+    return -ENOSYS;
 }
 
 static int out_get_presentation_position(const struct audio_stream_out *stream,
@@ -995,7 +995,8 @@ static int out_get_presentation_position(const struct audio_stream_out *stream,
     pthread_mutex_lock(&out->lock);
 
     if (!adev->in_call) {
-        if (pcm_get_htimestamp(out->pcm, &avail, timestamp) == 0) {
+        if (out->pcm &&
+            (pcm_get_htimestamp(out->pcm, &avail, timestamp) == 0)) {
             signed_frames = out->written - pcm_get_buffer_size(out->pcm) + avail;
         }
     } else {
@@ -1442,7 +1443,9 @@ static int adev_set_parameters(struct audio_hw_device *dev, const char *kvpairs)
     UNUSED(dev);
     UNUSED(kvpairs);
 
-    return -ENOSYS;
+    ALOGV("adev_set_parameters() parameter='%s'", kvpairs);
+
+    return 0;
 }
 
 static char * adev_get_parameters(const struct audio_hw_device *dev,
@@ -1466,7 +1469,7 @@ static int adev_set_voice_volume(struct audio_hw_device *dev, float volume)
     UNUSED(dev);
     UNUSED(volume);
 
-    return -ENOSYS;
+    return 0;
 }
 
 static int adev_set_master_volume(struct audio_hw_device *dev, float volume)
@@ -1504,13 +1507,11 @@ static int adev_get_master_mute(struct audio_hw_device *dev, bool *muted)
 static int adev_set_mode(struct audio_hw_device *dev, audio_mode_t mode)
 {
     struct j6_audio_device *adev = (struct j6_audio_device *)dev;
-    struct j6_stream_out *out = adev->out;
     int ret = 0;
 
     ALOGV("adev_set_mode() mode=0x%08x", mode);
 
     pthread_mutex_lock(&adev->lock);
-    pthread_mutex_lock(&out->lock);
 
     if (adev->mode == mode) {
         ALOGV("adev_set_mode() already in mode=0x%08x", mode);
@@ -1534,7 +1535,6 @@ static int adev_set_mode(struct audio_hw_device *dev, audio_mode_t mode)
     adev->mode = mode;
 
 out:
-    pthread_mutex_unlock(&out->lock);
     pthread_mutex_unlock(&adev->lock);
 
     return ret;
