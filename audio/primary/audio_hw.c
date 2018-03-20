@@ -137,11 +137,17 @@ struct j6_stream_out {
     struct j6_audio_device *dev;
     struct pcm_config config;
     struct pcm *pcm;
+    struct resampler_itfe *resampler;
     struct timespec last;
     pthread_mutex_t lock;
+    int16_t *buffer;
+    size_t hw_frame_size;
+    unsigned int requested_rate;
+    unsigned int requested_channels;
     unsigned int card;
     unsigned int port;
     audio_devices_t device;
+    bool needs_remix;
     bool standby;
     int64_t written; /* total frames written, not cleared when entering standby */
 };
@@ -260,6 +266,38 @@ static bool find_card_index(const char *supported_cards[],
     return found;
 }
 
+/*
+ * Recommended buffer sizes for the mandatory sampling frequencies.
+ * The buffer sizes were specifically chosen to avoid multiple
+ * resample_from_input() calls to consume an output buffer, which
+ * simplifies the HAL's write() function.
+ * The hardware natively supports 11.025 and 22.05kHz, but the rate of
+ * the playback and capture streams must be symmetric (they share the
+ * same FSYNC).  Resampling is also being used for those two sampling
+ * rates in order to avoid cases where one stream direction drags the
+ * sample rate to a suboptimal value for the other stream direction,
+ * for example, recording audio at 11.025kHz and then trying to play
+ * 44.1kHz audio
+ */
+static inline uint32_t output_buffer_size(uint32_t rate)
+{
+    uint32_t samples;
+
+    switch (rate) {
+    case 8000:  return 32;
+    case 11025: return 64;
+    case 16000: return 80;
+    case 32000: return 176;
+    case 22050: return 128;
+    case 44100: return 256;
+    }
+
+    samples = (rate * PLAYBACK_PERIOD_SIZE) / PLAYBACK_SAMPLE_RATE;
+    samples = ((samples + 15) / 16) * 16;
+
+    return samples;
+}
+
 static void do_out_standby(struct j6_stream_out *out);
 
 static size_t get_input_buffer_size(uint32_t sample_rate, int format, int channel_count)
@@ -362,6 +400,33 @@ static void duplicate_channels_from_mono(struct buffer_remix *data, void *buf, s
     N = frames - 1;
     d = (char*)buf + N * out_frame;
     s = (char*)buf + N * in_frame;
+
+    /* duplicate first channel into the rest of channels in the frame */
+    while (N-- >= 0) {
+        for (c = 0; c < out_frame; ++c)
+            d[c] = s[c % in_frame];
+        d -= out_frame;
+        s -= in_frame;
+    }
+}
+
+static void mono_to_stereo(void *dst, const void *src, size_t frames, int sample_size)
+{
+    int in_frame, out_frame;
+    int N, c;
+    char *s, *d;
+
+    ALOGVV("mono_to_stereo() src=%p dst=%p frames=%u", src, dst, frames);
+
+    if (frames == 0)
+        return;
+
+    in_frame = sample_size;
+    out_frame = 2 * sample_size;
+
+    N = frames - 1;
+    d = (char *)dst + N * out_frame;
+    s = (char *)src + N * in_frame;
 
     /* duplicate first channel into the rest of channels in the frame */
     while (N-- >= 0) {
@@ -713,12 +778,11 @@ static uint32_t time_diff(struct timespec t1, struct timespec t0)
 
 static uint32_t out_get_sample_rate(const struct audio_stream *stream)
 {
-    uint32_t rate = PLAYBACK_SAMPLE_RATE;
+    const struct j6_stream_out *out = (const struct j6_stream_out *)stream;
 
-    UNUSED(stream);
-    ALOGVV("out_get_sample_rate() stream=%p rate=%u", stream, rate);
+    ALOGVV("out_get_sample_rate() stream=%p rate=%u", stream, out->requested_rate);
 
-    return rate;
+    return out->requested_rate;
 }
 
 static int out_set_sample_rate(struct audio_stream *stream, uint32_t rate)
@@ -732,9 +796,9 @@ static int out_set_sample_rate(struct audio_stream *stream, uint32_t rate)
 
 static size_t out_get_buffer_size(const struct audio_stream *stream)
 {
-    const struct audio_stream_out *s = (const struct audio_stream_out *)stream;
-    uint32_t frames = ((PLAYBACK_PERIOD_SIZE + 15) / 16) * 16;
-    size_t bytes = frames * audio_stream_out_frame_size(s);
+    const struct j6_stream_out *out = (const struct j6_stream_out *)stream;
+    uint32_t frames = output_buffer_size(out->requested_rate);
+    size_t bytes = frames * out->requested_channels * sizeof(int16_t);
 
     ALOGVV("out_get_buffer_size() stream=%p frames=%u bytes=%u", stream, frames, bytes);
 
@@ -743,12 +807,11 @@ static size_t out_get_buffer_size(const struct audio_stream *stream)
 
 static audio_channel_mask_t out_get_channels(const struct audio_stream *stream)
 {
-    audio_channel_mask_t channels = AUDIO_CHANNEL_OUT_STEREO;
+    const struct j6_stream_out *out = (const struct j6_stream_out *)stream;
 
-    UNUSED(stream);
-    ALOGVV("out_get_channels() stream=%p channels=%u", stream, popcount(channels));
+    ALOGVV("out_get_channels() stream=%p channels=%u", stream, out->requested_channels);
 
-    return channels;
+    return audio_channel_out_mask_from_count(out->requested_channels);
 }
 
 static audio_format_t out_get_format(const struct audio_stream *stream)
@@ -886,10 +949,13 @@ static ssize_t out_write(struct audio_stream_out *stream, const void* buffer,
     struct j6_audio_device *adev = out->dev;
     struct timespec now;
     const size_t frame_size = audio_stream_out_frame_size(s);
-    const size_t frames = bytes / frame_size;
-    uint32_t rate = out->config.rate;
+    size_t frames = bytes / frame_size;
+    size_t hw_frames;
+    uint32_t rate = out->requested_rate;
     uint32_t write_usecs = frames * 1000000 / rate;
     uint32_t diff_usecs;
+    const void *hw_buf;
+    void *in_buf;
     int ret = 0;
 
     ALOGVV("out_write() stream=%p buffer=%p size=%u/%u time=%u usecs",
@@ -928,7 +994,25 @@ static ssize_t out_write(struct audio_stream_out *stream, const void* buffer,
     pthread_mutex_unlock(&adev->lock);
 
     if (!adev->in_call) {
-        ret = pcm_write(out->pcm, buffer, bytes);
+        if (out->resampler) {
+            in_buf = (void *)buffer;
+            hw_frames = out->config.period_size;
+
+            out->resampler->resample_from_input(out->resampler,
+                                                in_buf, &frames,
+                                                out->buffer, &hw_frames);
+            hw_buf = out->buffer;
+        } else {
+            hw_frames = frames;
+            hw_buf = buffer;
+        }
+
+        if (out->needs_remix) {
+            mono_to_stereo(out->buffer, hw_buf, hw_frames, sizeof(int16_t));
+            hw_buf = out->buffer;
+        }
+
+        ret = pcm_write(out->pcm, hw_buf, hw_frames * out->hw_frame_size);
         if (ret) {
             ALOGE("out_write() failed to write audio data %d", ret);
             usleep(write_usecs); /* limits the rate of error messages */
@@ -1370,6 +1454,8 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
 {
     struct j6_audio_device *adev = (struct j6_audio_device *)dev;
     struct j6_stream_out *out;
+    int buffer_size;
+    int ret;
 
     UNUSED(handle);
     UNUSED(devices);
@@ -1408,19 +1494,73 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
     out->dev = adev;
     out->standby = true;
     out->config = pcm_config_playback;
+    out->requested_rate = config->sample_rate;
+    out->requested_channels = popcount(config->channel_mask);
+    out->hw_frame_size = out->config.channels * sizeof(int16_t);
+    out->resampler = NULL;
+    out->buffer = NULL;
     out->written = 0;
     out->card = adev->card;
     out->port = 0;
     out->device = devices;
     adev->out = out;
 
-    config->format = out_get_format(&out->stream.common);
-    config->channel_mask = out_get_channels(&out->stream.common);
-    config->sample_rate = out_get_sample_rate(&out->stream.common);
+    /* mono-to-stereo remix since playback stream is stereo */
+    if (out->requested_channels == 1) {
+        ALOGV("adev_open_output_stream() mono-to-stereo remix needed");
+        out->needs_remix = true;
+    } else if (out->requested_channels == 2) {
+        out->needs_remix = false;
+    } else {
+        ALOGE("adev_open_output_stream() %d channels is not supported",
+              out->requested_channels);
+        ret = -ENOTSUP;
+        goto err1;
+    }
+
+    if (out->requested_rate != out->config.rate) {
+        ALOGV("adev_output_output_stream() resample needed, req=%uHz got=%uHz",
+              out->requested_rate, out->config.rate);
+
+        ret = create_resampler(out->requested_rate,
+                               out->config.rate,
+                               out->requested_channels,
+                               RESAMPLER_QUALITY_DEFAULT,
+                               NULL,
+                               &out->resampler);
+        if (ret) {
+            ALOGE("adev_open_output_stream() failed to create resampler %d", ret);
+            goto err1;
+        }
+    }
+
+    if (out->resampler || out->needs_remix) {
+        /*
+         * Supported sampling rates that require resampling are lower than the
+         * HAL's default sampling rate (44.1kHz) so a buffer as large as the HAL's
+         * will suffice
+         */
+        buffer_size = out->config.period_size * out->hw_frame_size;
+
+        if (out->needs_remix)
+            buffer_size *= 2;
+
+        out->buffer = malloc(buffer_size);
+        if (!out->buffer) {
+            ret = -ENOMEM;
+            goto err2;
+        }
+    }
 
     *stream_out = &out->stream;
 
     return 0;
+
+ err2:
+    release_resampler(out->resampler);
+ err1:
+    free(out);
+    return ret;
 }
 
 static void adev_close_output_stream(struct audio_hw_device *dev,
@@ -1432,10 +1572,15 @@ static void adev_close_output_stream(struct audio_hw_device *dev,
     ALOGV("adev_close_output_stream() stream=%p", out);
 
     out_standby(&stream->common);
-    out->dev = NULL;
-    adev->out = NULL;
 
-    free(stream);
+    if (out->resampler)
+        release_resampler(out->resampler);
+
+    if (out->buffer)
+        free(out->buffer);
+
+    free(out);
+    adev->out = NULL;
 }
 
 static int adev_set_parameters(struct audio_hw_device *dev, const char *kvpairs)
@@ -1712,7 +1857,9 @@ static void adev_close_input_stream(struct audio_hw_device *dev,
     if (in->remix)
         free(in->remix);
 
-    free(in->buffer);
+    if (in->buffer)
+        free(in->buffer);
+
     free(in);
     adev->in = NULL;
 }
