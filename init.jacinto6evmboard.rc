@@ -15,6 +15,8 @@ on post-fs-data
 
     #enabling thermal zone for mpu
     write /sys/class/thermal/thermal_zone0/mode enabled
+    #hold a dummy wake_lock
+    write /sys/power/wake_lock dummy
 
 on boot
 
