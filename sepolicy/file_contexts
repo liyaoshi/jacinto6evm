@@ -50,3 +50,4 @@
 /dev/block/platform/44000000.ocp/480b4000.mmc/by-name/recovery   u:object_r:recovery_block_device:s0
 /dev/block/platform/44000000.ocp/480b4000.mmc/by-name/cache      u:object_r:cache_block_device:s0
 /dev/block/platform/44000000.ocp/480b4000.mmc/by-name/userdata   u:object_r:userdata_block_device:s0
+/dev/block/platform/44000000.ocp/480b4000.mmc/by-name/misc       u:object_r:misc_block_device:s0
