@@ -1,3 +1,5 @@
+#For holding a wake_lock in init.rc
+wakelock_use(init)
 #For loading modules via init.rc (wifi,cmem)
 allow init self:capability sys_module;
 #Create symlinks for storage
