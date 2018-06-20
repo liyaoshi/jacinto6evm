@@ -37,13 +37,6 @@ on late-init
     exec u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -a -d \
          /vendor/lib/modules wl18xx.ko wlcore.ko wlcore_sdio.ko \
                              scsi_mod.ko usb-storage.ko sd_mod.ko \
-                             dra7-evm-encoder-tpd12s015.ko encoder-tc358768.ko encoder-tpd12s015.ko encoder-tfp410.ko \
-                             ti-fpd3-serdes.ko \
-                             connector-hdmi.ko connector-dvi.ko \
-                             panel-dpi.ko leds-tlc591xx.ko gpio_backlight.ko led_bl.ko pwm_bl.ko \
-                             edt-ft5x06.ko goodix.ko input-polldev.ko ldc3001_ts.ko \
-                             ov1063x.ko ov490.ko tvp5158.ko \
-                             gpio-pca953x.ko \
                              snd-soc-tlv320aic3x.ko
 
 service pvrsrvinit /vendor/bin/pvrsrvinit
@@ -78,9 +71,3 @@ service lad_dra7xx /vendor/bin/lad_dra7xx -g
     group media
     oneshot
 
-service vis /vendor/bin/RadioApp -h eth
-    class main
-    user system
-    group media inet
-    disabled
-    oneshot
